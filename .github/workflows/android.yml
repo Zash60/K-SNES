@@ -33,7 +33,7 @@ jobs:
         ndk-version: r26b
         link-to-sdk: true
 
-    # --- PASSO 1: Configuração do Gradle ---
+    # --- CONFIGURAÇÃO GRADLE ---
     - name: Create gradle.properties
       run: |
         echo "org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8" > gradle.properties
@@ -63,51 +63,86 @@ jobs:
         }
         EOF
 
-    # --- PASSO 2: Correção de Manifestos e Gradle ---
-    - name: Fix Legacy Gradle & Manifests
+    # --- CORREÇÃO DE SYNTAXE GRADLE ---
+    - name: Fix Legacy Gradle Syntax
       run: |
-        # Gradle Syntax
         find . -name "build.gradle" -type f -exec sed -i 's/compile /implementation /g' {} +
         find . -name "build.gradle" -type f -exec sed -i 's/testCompile /testImplementation /g' {} +
         find . -name "build.gradle" -type f -exec sed -i 's/androidTestCompile /androidTestImplementation /g' {} +
         find . -name "build.gradle" -type f -exec sed -i 's/provided /compileOnly /g' {} +
         find . -name "build.gradle" -type f -exec sed -i 's/project.ext./rootProject.ext./g' {} +
-        
-        # Manifest Cleaning
-        find . -name "AndroidManifest.xml" -not -path "*/app/*" -exec sed -i 's/package="[^"]*"//' {} +
-        
-        # Fix App Manifest (Android 12+)
-        sed -i 's/<activity/<activity android:exported="true"/g' app/src/main/AndroidManifest.xml
-        # Remove exported from activities that don't need it (simple cleanup/fallback logic handled by merger usually, but 'true' is safer for build)
 
-    # --- PASSO 3: Correção do Código C++ (NDK 64-bits) ---
+    # --- REESCRITA SEGURA DO MANIFESTO ---
+    # Em vez de tentar editar com sed, escrevemos o arquivo correto diretamente.
+    - name: Overwrite App Manifest (Safe Fix)
+      run: |
+        cat <<EOF > app/src/main/AndroidManifest.xml
+        <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="preferExternal">
+            <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+            <uses-permission android:name="android.permission.BLUETOOTH" />
+            <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+            <uses-permission android:name="android.permission.INTERNET" />
+            <uses-permission android:name="android.permission.VIBRATE" />
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+            <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+            <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+            <application android:name=".KSNESApplication" android:allowBackup="true" android:fullBackupContent="@xml/backup_descriptor" android:icon="@drawable/app_icon" android:label="@string/app_label">
+                <activity android:name=".activity.MainActivity" android:configChanges="orientation|keyboardHidden" android:exported="true">
+                    <intent-filter>
+                        <action android:name="android.intent.action.MAIN" />
+                        <category android:name="android.intent.category.DEFAULT" />
+                        <category android:name="android.intent.category.LAUNCHER" />
+                    </intent-filter>
+                </activity>
+                <activity-alias android:name="CreateShortcuts" android:label="@string/launcher_shortcut_name" android:exported="true" android:targetActivity=".activity.MainActivity">
+                    <intent-filter>
+                        <action android:name="android.intent.action.CREATE_SHORTCUT" />
+                        <category android:name="android.intent.category.DEFAULT" />
+                    </intent-filter>
+                </activity-alias>
+                <activity android:name=".activity.FileChooser" />
+                <activity android:name=".activity.StateSlotsActivity" android:theme="@android:style/Theme.Dialog" />
+                <activity android:name=".activity.KeyProfilesActivity" />
+                <activity android:name=".activity.HelpActivity" />
+                <activity android:name=".activity.DeviceListActivity" android:configChanges="orientation|keyboardHidden" android:theme="@android:style/Theme.Dialog" />
+                <activity android:name=".activity.CheatsActivity" android:process=":emulator" />
+                <activity android:name=".activity.EmulatorSettings" android:process=":emulator" />
+                <activity android:name=".activity.EmulatorActivity" android:configChanges="orientation|keyboardHidden" android:launchMode="singleTask" android:process=":emulator" android:exported="true">
+                    <intent-filter>
+                        <action android:name="android.intent.action.VIEW" />
+                        <category android:name="android.intent.category.DEFAULT" />
+                        <data android:scheme="file" />
+                        <data android:mimeType="application/zip" />
+                        <data android:mimeType="application/octet-stream" />
+                    </intent-filter>
+                </activity>
+                <service android:name=".service.EmulatorService" android:process=":emulator" />
+            </application>
+        </manifest>
+        EOF
+
+    - name: Clean Module Manifests
+      run: |
+         find . -name "AndroidManifest.xml" -not -path "*/app/*" -exec sed -i 's/package="[^"]*"//' {} +
+
+    # --- PATCHES C++ (NDK 64-bits) ---
     - name: Patch C++ Source Code
       run: |
-        # 1. emulator.cpp: Adicionar includes faltantes
         sed -i '1i #include <cstring>\n#include <cstdio>\n#include <cstdlib>' snes9x/src/main/cpp/common/emulator.cpp
-        
-        # 2. fxdbg.cpp: Corrigir formato de string (%d vs long) para 64-bits
         sed -i 's/GSU.pvSreg - GSU.avReg/(int)(GSU.pvSreg - GSU.avReg)/g' snes9x/src/main/cpp/sneslib/fxdbg.cpp
         sed -i 's/GSU.pvDreg - GSU.avReg/(int)(GSU.pvDreg - GSU.avReg)/g' snes9x/src/main/cpp/sneslib/fxdbg.cpp
-        
-        # 3. spc700.cpp: Corrigir aviso de precedência de macro (PushW)
         sed -i 's/(w >> 8)/((w) >> 8)/g' snes9x/src/main/cpp/sneslib/spc700.cpp
-        
-        # 4. JNIHelp.c: Corrigir cast de ponteiro para int (fatal em 64-bits)
         sed -i 's/(int)ret/(long)ret/g' snes9x/src/main/cpp/common/libnativehelper/JNIHelp.c
-        
-        # 5. sa1.cpp: Aplicar correções de 64-bits e remover código quebrado
         sed -i 's/(int) GetAddress/(long) GetAddress/g' snes9x/src/main/cpp/sneslib/sa1.cpp
         sed -i 's/(int) Setaddress/(long) Setaddress/g' snes9x/src/main/cpp/sneslib/sa1.cpp
         sed -i 's/S9xSA1SetPCBase (SA1.PC)/S9xSA1SetPCBase (SA1Registers.PC)/g' snes9x/src/main/cpp/sneslib/sa1.cpp
-        # Comentar linhas com SA1.Completed (membro inexistente)
         sed -i 's/SA1.Completed/\/\/ SA1.Completed/g' snes9x/src/main/cpp/sneslib/sa1.cpp
 
-    # --- PASSO 4: Commit das Correções ---
+    # --- COMMIT E BUILD ---
     - name: Commit & Push Fixes
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
-        commit_message: "Auto-fix: Gradle, AndroidX, Manifest and C++ 64-bit patches"
+        commit_message: "Auto-fix: Gradle 8, Android 12 Manifest and C++ Patches"
         branch: ${{ github.head_ref }}
         file_pattern: '**/*'
 
