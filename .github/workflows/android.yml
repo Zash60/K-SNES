@@ -21,12 +21,105 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    # CORREÇÃO AQUI: Usando a action correta para o NDK
+    # Instala o NDK r26b (necessário para o módulo snes9x)
     - name: Setup Android NDK
       uses: nttld/setup-ndk@v1
       with:
         ndk-version: r26b
         link-to-sdk: true
+
+    # Cria o arquivo gradle.properties necessário para AndroidX
+    - name: Create gradle.properties
+      run: |
+        echo "org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8" > gradle.properties
+        echo "android.useAndroidX=true" >> gradle.properties
+        echo "android.enableJetifier=true" >> gradle.properties
+        echo "android.nonTransitiveRClass=false" >> gradle.properties
+
+    # Cria o arquivo dependencies.gradle necessário para as versões do SDK
+    - name: Create dependencies.gradle
+      run: |
+        cat <<EOF > dependencies.gradle
+        ext {
+            compileSdkVer = 34
+            minSdkVer = 24
+            targetSdkVer = 34
+            appCompatVer = '1.7.0'
+            materialVer = '1.11.0'
+            daggerVer = '2.50'
+            junitVer = '4.13.2'
+            espressoVer = '3.5.1'
+            supportDependencies = [
+                    appCompat        : "androidx.appcompat:appcompat:1.7.0",
+                    material         : "com.google.android.material:material:1.11.0",
+                    constraintLayout : "androidx.constraintlayout:constraintlayout:2.1.4",
+                    supportLegacy    : "androidx.legacy:legacy-support-v4:1.0.0",
+                    annotation       : "androidx.annotation:annotation:1.7.0"
+            ]
+        }
+        EOF
+
+    # Corrige sintaxe antiga do Gradle (compile -> implementation)
+    - name: Fix Legacy Gradle Syntax
+      run: |
+        find . -name "build.gradle" -type f -exec sed -i 's/compile /implementation /g' {} +
+        find . -name "build.gradle" -type f -exec sed -i 's/testCompile /testImplementation /g' {} +
+        find . -name "build.gradle" -type f -exec sed -i 's/androidTestCompile /androidTestImplementation /g' {} +
+        find . -name "build.gradle" -type f -exec sed -i 's/provided /compileOnly /g' {} +
+        # Corrige erro de variáveis de projeto
+        find . -name "build.gradle" -type f -exec sed -i 's/project.ext./rootProject.ext./g' {} +
+
+    # Sobrescreve o AndroidManifest.xml principal para corrigir erro do Android 12 (exported=true)
+    - name: Fix App Manifest (Android 12+)
+      run: |
+        cat <<EOF > app/src/main/AndroidManifest.xml
+        <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="preferExternal">
+            <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+            <uses-permission android:name="android.permission.BLUETOOTH" />
+            <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+            <uses-permission android:name="android.permission.INTERNET" />
+            <uses-permission android:name="android.permission.VIBRATE" />
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+            <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+            <application android:name=".KSNESApplication" android:allowBackup="true" android:fullBackupContent="@xml/backup_descriptor" android:icon="@drawable/app_icon" android:label="@string/app_label">
+                <activity android:name=".activity.MainActivity" android:configChanges="orientation|keyboardHidden" android:exported="true">
+                    <intent-filter>
+                        <action android:name="android.intent.action.MAIN" />
+                        <category android:name="android.intent.category.DEFAULT" />
+                        <category android:name="android.intent.category.LAUNCHER" />
+                    </intent-filter>
+                </activity>
+                <activity-alias android:name="CreateShortcuts" android:label="@string/launcher_shortcut_name" android:exported="true" android:targetActivity=".activity.MainActivity">
+                    <intent-filter>
+                        <action android:name="android.intent.action.CREATE_SHORTCUT" />
+                        <category android:name="android.intent.category.DEFAULT" />
+                    </intent-filter>
+                </activity-alias>
+                <activity android:name=".activity.FileChooser" />
+                <activity android:name=".activity.StateSlotsActivity" android:theme="@android:style/Theme.Dialog" />
+                <activity android:name=".activity.KeyProfilesActivity" />
+                <activity android:name=".activity.HelpActivity" />
+                <activity android:name=".activity.DeviceListActivity" android:configChanges="orientation|keyboardHidden" android:theme="@android:style/Theme.Dialog" />
+                <activity android:name=".activity.CheatsActivity" android:process=":emulator" />
+                <activity android:name=".activity.EmulatorSettings" android:process=":emulator" />
+                <activity android:name=".activity.EmulatorActivity" android:configChanges="orientation|keyboardHidden" android:launchMode="singleTask" android:process=":emulator" android:exported="true">
+                    <intent-filter>
+                        <action android:name="android.intent.action.VIEW" />
+                        <category android:name="android.intent.category.DEFAULT" />
+                        <data android:scheme="file" />
+                        <data android:mimeType="application/zip" />
+                        <data android:mimeType="application/octet-stream" />
+                    </intent-filter>
+                </activity>
+                <service android:name=".service.EmulatorService" android:process=":emulator" />
+            </application>
+        </manifest>
+        EOF
+
+    # Limpa manifestos dos módulos para evitar conflito de namespace
+    - name: Clean Module Manifests
+      run: |
+         find . -name "AndroidManifest.xml" -not -path "*/app/*" -exec sed -i 's/package="[^"]*"//' {} +
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
