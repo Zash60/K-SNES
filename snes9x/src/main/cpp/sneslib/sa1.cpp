@@ -131,7 +131,8 @@ void S9xFixSA1AfterSnapshotLoad ()
     SA1.ShiftedPB = (uint32) SA1Registers.PB << 16;
     SA1.ShiftedDB = (uint32) SA1Registers.DB << 16;
 
-    S9xSA1SetPCBase (SA1.PC);
+    // CORREÇÃO: Usar SA1Registers.PC (uint32) em vez de SA1.PC (ponteiro)
+    S9xSA1SetPCBase (SA1Registers.PC); 
     S9xSA1SetBWRAMMemMap (Memory.FillRAM [0x2225]);
 
     if (Memory.FillRAM [0x2225] & 0x80)
@@ -146,7 +147,7 @@ uint8 S9xSA1GetByte (uint32 address)
     if (GetAddress >= (uint8 *) CMemory::MAP_LAST)
 	return (*(GetAddress + (address & 0xffff)));
 
-    // CORREÇÃO: Cast para long para suportar 64-bits
+    // CORREÇÃO: Cast para long para compatibilidade com 64-bits
     switch ((long) GetAddress)
     {
     case CMemory::MAP_PPU:
@@ -185,7 +186,7 @@ void S9xSA1SetByte (uint8 byte, uint32 address)
 	return;
     }
 
-    // CORREÇÃO: Cast para long para suportar 64-bits
+    // CORREÇÃO: Cast para long para compatibilidade com 64-bits
     switch ((long) Setaddress)
     {
     case CMemory::MAP_PPU:
@@ -542,7 +543,9 @@ void S9xSetSA1 (uint8 byte, uint32 address)
 	break;
     case 0x2231:
 	if (byte & 0x80)
-	    SA1.Completed = FALSE;
+    {
+	    // SA1.Completed = FALSE;
+    }
 	break;
     case 0x2232:
     case 0x2233:
@@ -565,7 +568,7 @@ void S9xSetSA1 (uint8 byte, uint32 address)
 	    Memory.FillRAM [0x2300] |= 0x20;
 	    if (Memory.FillRAM [0x2201] & 0x20)
 		S9xSetIRQ (SA1_DMA_IRQ_SOURCE);
-	    SA1.Completed = TRUE;
+	    // SA1.Completed = TRUE;
 	}
 	break;
     case 0x2237:
@@ -581,7 +584,7 @@ void S9xSetSA1 (uint8 byte, uint32 address)
 	    Memory.FillRAM [0x2300] |= 0x20;
 	    if (Memory.FillRAM [0x2201] & 0x20)
 		S9xSetIRQ (SA1_DMA_IRQ_SOURCE);
-	    SA1.Completed = TRUE;
+	    // SA1.Completed = TRUE;
 	}
 	break;
     case 0x2238:
@@ -755,7 +758,7 @@ static void S9xSA1DMA ()
     Memory.FillRAM [0x2300] |= 0x20;
     if (Memory.FillRAM [0x2201] & 0x20)
 	S9xSetIRQ (SA1_DMA_IRQ_SOURCE);
-    SA1.Completed = TRUE;
+    // SA1.Completed = TRUE;
 }
 
 void S9xSA1CharConv2 ()
