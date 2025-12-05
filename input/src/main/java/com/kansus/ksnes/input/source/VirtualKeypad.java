@@ -9,7 +9,8 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import android.support.v4.content.ContextCompat;
+// CORREÇÃO: Mudança de android.support para androidx.core
+import androidx.core.content.ContextCompat;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -461,6 +462,7 @@ public class VirtualKeypad implements TouchInputSource {
         }
 
         final void load(Context context, float sx, float sy) {
+            // CORREÇÃO: Usando ContextCompat do pacote AndroidX
             bitmap = ((BitmapDrawable) ContextCompat.getDrawable(context, resId)).getBitmap();
             bitmap = Bitmap.createScaledBitmap(bitmap,
                     (int) (sx * bitmap.getWidth()),
@@ -470,6 +472,7 @@ public class VirtualKeypad implements TouchInputSource {
         final void reload(Context context, int id) {
             int w = bitmap.getWidth();
             int h = bitmap.getHeight();
+            // CORREÇÃO: Usando ContextCompat do pacote AndroidX
             bitmap = ((BitmapDrawable) ContextCompat.getDrawable(context, id)).getBitmap();
             bitmap = Bitmap.createScaledBitmap(bitmap, w, h, true);
         }
@@ -479,4 +482,4 @@ public class VirtualKeypad implements TouchInputSource {
                 canvas.drawBitmap(bitmap, bounds.left, bounds.top, paint);
         }
     }
-}
+                      }
