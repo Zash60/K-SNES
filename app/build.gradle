@@ -1,49 +1,54 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    namespace 'com.kansus.ksnes'
+    compileSdk project.ext.compileSdkVer
 
     defaultConfig {
         applicationId "com.kansus.ksnes"
-        minSdkVersion 15
-        targetSdkVersion 26
+        minSdk project.ext.minSdkVer
+        targetSdk project.ext.targetSdkVer
         versionCode 1
         versionName "0.1"
+        
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
-    dependencies {
-        compile supportDependencies.supportV4
-
-        compile "com.google.dagger:dagger:2.9"
-        annotationProcessor "com.google.dagger:dagger-compiler:2.9"
-        provided 'javax.annotation:jsr250-api:1.0'
+    
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
 dependencies {
-    debugCompile project(path: ':abstractemulator', configuration: "debug")
-    releaseCompile project(path: ':abstractemulator', configuration: "release")
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    
+    // AndroidX & Material
+    implementation project.ext.supportDependencies.appCompat
+    implementation project.ext.supportDependencies.material
+    implementation project.ext.supportDependencies.supportLegacy
 
-    debugCompile project(path: ':snes9x', configuration: "debug")
-    releaseCompile project(path: ':snes9x', configuration: "release")
+    // Dagger
+    implementation "com.google.dagger:dagger:${project.ext.daggerVer}"
+    annotationProcessor "com.google.dagger:dagger-compiler:${project.ext.daggerVer}"
+    compileOnly 'javax.annotation:jsr250-api:1.0'
 
-    debugCompile project(path: ':input', configuration: "debug")
-    releaseCompile project(path: ':input', configuration: "release")
+    // Tests
+    testImplementation "junit:junit:${project.ext.junitVer}"
+    androidTestImplementation "androidx.test.espresso:espresso-core:${project.ext.espressoVer}"
 
-    debugCompile project(path: ':multiplayer', configuration: "debug")
-    releaseCompile project(path: ':multiplayer', configuration: "release")
-
-    debugCompile project(path: ':preferences', configuration: "debug")
-    releaseCompile project(path: ':preferences', configuration: "release")
-
-    debugCompile project(path: ':roms', configuration: "debug")
-    releaseCompile project(path: ':roms', configuration: "release")
+    // Modules
+    implementation project(':abstractemulator')
+    implementation project(':snes9x')
+    implementation project(':input')
+    implementation project(':multiplayer')
+    implementation project(':preferences')
+    implementation project(':roms')
 }
