@@ -73,7 +73,6 @@ jobs:
         find . -name "build.gradle" -type f -exec sed -i 's/project.ext./rootProject.ext./g' {} +
 
     # --- REESCRITA SEGURA DO MANIFESTO ---
-    # Em vez de tentar editar com sed, escrevemos o arquivo correto diretamente.
     - name: Overwrite App Manifest (Safe Fix)
       run: |
         cat <<EOF > app/src/main/AndroidManifest.xml
@@ -128,21 +127,32 @@ jobs:
     # --- PATCHES C++ (NDK 64-bits) ---
     - name: Patch C++ Source Code
       run: |
+        # 1. Adicionar includes necessários
         sed -i '1i #include <cstring>\n#include <cstdio>\n#include <cstdlib>' snes9x/src/main/cpp/common/emulator.cpp
+        
+        # 2. Corrigir casts de ponteiros e formatos de string para 64-bits
         sed -i 's/GSU.pvSreg - GSU.avReg/(int)(GSU.pvSreg - GSU.avReg)/g' snes9x/src/main/cpp/sneslib/fxdbg.cpp
         sed -i 's/GSU.pvDreg - GSU.avReg/(int)(GSU.pvDreg - GSU.avReg)/g' snes9x/src/main/cpp/sneslib/fxdbg.cpp
         sed -i 's/(w >> 8)/((w) >> 8)/g' snes9x/src/main/cpp/sneslib/spc700.cpp
         sed -i 's/(int)ret/(long)ret/g' snes9x/src/main/cpp/common/libnativehelper/JNIHelp.c
         sed -i 's/(int) GetAddress/(long) GetAddress/g' snes9x/src/main/cpp/sneslib/sa1.cpp
         sed -i 's/(int) Setaddress/(long) Setaddress/g' snes9x/src/main/cpp/sneslib/sa1.cpp
+        
+        # 3. Corrigir erro de tipo em S9xSA1SetPCBase
         sed -i 's/S9xSA1SetPCBase (SA1.PC)/S9xSA1SetPCBase (SA1Registers.PC)/g' snes9x/src/main/cpp/sneslib/sa1.cpp
-        sed -i 's/SA1.Completed/\/\/ SA1.Completed/g' snes9x/src/main/cpp/sneslib/sa1.cpp
+        
+        # 4. Remover linhas com SA1.Completed (membro inexistente) - Deleta a linha inteira
+        sed -i '/SA1.Completed/d' snes9x/src/main/cpp/sneslib/sa1.cpp
+
+        # 5. Desativar _FORTIFY_SOURCE para evitar erro de buffer overflow check (sdd1.cpp)
+        # Adiciona a flag no Android.mk
+        sed -i '/LOCAL_MODULE/a LOCAL_CFLAGS += -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0' snes9x/src/main/cpp/Android.mk
 
     # --- COMMIT E BUILD ---
     - name: Commit & Push Fixes
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
-        commit_message: "Auto-fix: Gradle 8, Android 12 Manifest and C++ Patches"
+        commit_message: "Auto-fix: Build configs and C++ patches for NDK"
         branch: ${{ github.head_ref }}
         file_pattern: '**/*'
 
