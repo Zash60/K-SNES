@@ -72,13 +72,6 @@ jobs:
         find . -name "build.gradle" -type f -exec sed -i 's/provided /compileOnly /g' {} +
         find . -name "build.gradle" -type f -exec sed -i 's/project.ext./rootProject.ext./g' {} +
 
-    # --- INJEÇÃO DE FLAGS DO NDK (Correção do Erro sdd1.cpp) ---
-    - name: Inject NDK Flags
-      run: |
-        # Adiciona a flag para desativar Fortify Source no snes9x/build.gradle
-        # Isso resolve o erro "size * count is too large for the given buffer"
-        sed -i 's/cFlags "-D__STDC_FORMAT_MACROS"/cFlags "-D__STDC_FORMAT_MACROS -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0"/g' snes9x/build.gradle
-
     # --- REESCRITA SEGURA DO MANIFESTO ---
     - name: Overwrite App Manifest (Safe Fix)
       run: |
@@ -131,10 +124,10 @@ jobs:
       run: |
          find . -name "AndroidManifest.xml" -not -path "*/app/*" -exec sed -i 's/package="[^"]*"//' {} +
 
-    # --- PATCHES C++ (NDK 64-bits) ---
+    # --- PATCHES C++ (NDK 64-bits & Fortify) ---
     - name: Patch C++ Source Code
       run: |
-        # 1. Adicionar includes necessários
+        # 1. Adicionar includes necessários no emulator.cpp
         sed -i '1i #include <cstring>\n#include <cstdio>\n#include <cstdlib>' snes9x/src/main/cpp/common/emulator.cpp
         
         # 2. Corrigir casts de ponteiros e formatos de string para 64-bits
@@ -148,14 +141,17 @@ jobs:
         # 3. Corrigir erro de tipo em S9xSA1SetPCBase
         sed -i 's/S9xSA1SetPCBase (SA1.PC)/S9xSA1SetPCBase (SA1Registers.PC)/g' snes9x/src/main/cpp/sneslib/sa1.cpp
         
-        # 4. Remover linhas com SA1.Completed (membro inexistente) - Deleta a linha inteira
+        # 4. Remover linhas com SA1.Completed (membro inexistente)
         sed -i '/SA1.Completed/d' snes9x/src/main/cpp/sneslib/sa1.cpp
+
+        # 5. Desativar _FORTIFY_SOURCE globalmente via Application.mk para corrigir erro do sdd1.cpp
+        echo "APP_CFLAGS += -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0" >> snes9x/src/main/cpp/Application.mk
 
     # --- COMMIT E BUILD ---
     - name: Commit & Push Fixes
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
-        commit_message: "Auto-fix: Disable NDK Fortify, Gradle 8 & C++ Patches"
+        commit_message: "Auto-fix: Disable Fortify Source, Gradle 8 & C++ Patches"
         branch: ${{ github.head_ref }}
         file_pattern: '**/*'
 
