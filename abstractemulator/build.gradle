@@ -1,12 +1,15 @@
 apply plugin: 'com.android.library'
 
 android {
-    namespace 'com.kansus.ksnes.abstractemulator' // Necessário para Gradle 8+
-    compileSdk project.ext.compileSdkVer
+    namespace 'com.kansus.ksnes.abstractemulator'
+    
+    // Acessando as variáveis definidas no passo 1
+    compileSdk rootProject.ext.compileSdkVer
 
     defaultConfig {
-        minSdk project.ext.minSdkVer
-        targetSdk project.ext.targetSdkVer
+        minSdk rootProject.ext.minSdkVer
+        targetSdk rootProject.ext.targetSdkVer
+        
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -17,7 +20,6 @@ android {
         }
     }
     
-    // Adicione isso para compatibilidade com Java 8
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -27,10 +29,10 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     
-    // Dependências de teste atualizadas para AndroidX
-    androidTestImplementation "androidx.test.espresso:espresso-core:${project.ext.espressoVer}"
-    testImplementation "junit:junit:${project.ext.junitVer}"
+    // Acessando as dependências do passo 1
+    implementation rootProject.ext.supportDependencies.appCompat
+    implementation rootProject.ext.supportDependencies.annotation
     
-    // Suporte a Annotations (substitui o antigo support-annotations)
-    implementation "androidx.annotation:annotation:1.7.0"
+    testImplementation "junit:junit:${rootProject.ext.junitVer}"
+    androidTestImplementation "androidx.test.espresso:espresso-core:${rootProject.ext.espressoVer}"
 }
