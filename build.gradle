@@ -4,12 +4,11 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        // Plugin do Gradle atualizado
         classpath 'com.android.tools.build:gradle:8.2.0'
     }
 }
 
-// !!! ESTA LINHA É CRUCIAL: Carrega as variáveis definidas no passo 1 !!!
+// Carrega as variáveis globais
 apply from: 'dependencies.gradle'
 
 allprojects {
