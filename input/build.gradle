@@ -1,15 +1,22 @@
 apply plugin: 'com.android.library'
 
 android {
-    namespace 'com.kansus.ksnes.input' // Mude o namespace conforme o módulo (ex: .roms, .preferences)
-    compileSdk project.ext.compileSdkVer
+    namespace 'com.kansus.ksnes.input'
+    
+    // CORREÇÃO: Usando rootProject.ext
+    compileSdk rootProject.ext.compileSdkVer
 
     defaultConfig {
-        minSdk project.ext.minSdkVer
-        targetSdk project.ext.targetSdkVer
+        // CORREÇÃO: Usando rootProject.ext
+        minSdk rootProject.ext.minSdkVer
+        targetSdk rootProject.ext.targetSdkVer
+        
+        versionCode 1
+        versionName "1.0"
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    
     buildTypes {
         release {
             minifyEnabled false
@@ -25,9 +32,14 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project.ext.supportDependencies.appCompat
-    testImplementation "junit:junit:${project.ext.junitVer}"
     
-    // Dependências específicas do módulo
+    // Bibliotecas AndroidX via rootProject
+    implementation rootProject.ext.supportDependencies.appCompat
+    implementation rootProject.ext.supportDependencies.annotation
+    
+    testImplementation "junit:junit:${rootProject.ext.junitVer}"
+    androidTestImplementation "androidx.test.espresso:espresso-core:${rootProject.ext.espressoVer}"
+
+    // Dependência de módulo interno
     implementation project(':abstractemulator')
 }
