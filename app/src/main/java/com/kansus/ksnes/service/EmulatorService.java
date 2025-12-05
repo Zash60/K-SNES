@@ -9,7 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
-import androidx.core.app.NotificationCompat; // Import Corrigido (AndroidX)
+// CORREÇÃO: Import correto do AndroidX
+import androidx.core.app.NotificationCompat; 
 
 import com.kansus.ksnes.R;
 import com.kansus.ksnes.activity.EmulatorActivity;
@@ -24,7 +25,8 @@ public class EmulatorService extends Service {
     public static final String ACTION_BACKGROUND = "com.kansus.actions.BACKGROUND";
 
     private static final String CHANNEL_ID = "ksnes_emulator_channel";
-    private static final int NOTIFICATION_ID = R.string.emulator_service_running;
+    // Usando um ID fixo > 0 para a notificação
+    private static final int NOTIFICATION_ID = 1337; 
 
     @Override
     public void onCreate() {
@@ -39,7 +41,7 @@ public class EmulatorService extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = getString(R.string.app_label);
             String description = getString(R.string.emulator_service_running);
-            int importance = NotificationManager.IMPORTANCE_LOW; // Low importance for background service
+            int importance = NotificationManager.IMPORTANCE_LOW;
             
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
@@ -61,14 +63,13 @@ public class EmulatorService extends Service {
                 stopSelf();
             }
         }
-        // If the system kills the service, restart it.
         return START_STICKY;
     }
 
     private void startForegroundServiceCompat() {
-        CharSequence text = getText(R.string.emulator_service_running);
+        CharSequence text = getString(R.string.emulator_service_running);
 
-        // Android 12+ requires explicit mutability flag for PendingIntents
+        // Android 12+ requires explicit mutability flag
         int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             pendingIntentFlags |= PendingIntent.FLAG_IMMUTABLE;
@@ -85,15 +86,19 @@ public class EmulatorService extends Service {
                 .setSmallIcon(R.drawable.app_icon)
                 .setTicker(text)
                 .setWhen(System.currentTimeMillis())
-                .setContentTitle(getText(R.string.app_label))
+                .setContentTitle(getString(R.string.app_label))
                 .setContentText(text)
                 .setContentIntent(contentIntent)
                 .setOngoing(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .build();
 
-        // Start Foreground directly (minSdk is 24, so this method exists)
-        startForeground(NOTIFICATION_ID, notification);
+        try {
+            startForeground(NOTIFICATION_ID, notification);
+        } catch (Exception e) {
+            // Em versões muito novas do Android, startForeground pode falhar se o app estiver em background
+            e.printStackTrace();
+        }
     }
 
     @Override
