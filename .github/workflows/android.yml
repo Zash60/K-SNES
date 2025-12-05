@@ -72,6 +72,13 @@ jobs:
         find . -name "build.gradle" -type f -exec sed -i 's/provided /compileOnly /g' {} +
         find . -name "build.gradle" -type f -exec sed -i 's/project.ext./rootProject.ext./g' {} +
 
+    # --- INJEÇÃO DE FLAGS DO NDK (Correção do Erro sdd1.cpp) ---
+    - name: Inject NDK Flags
+      run: |
+        # Adiciona a flag para desativar Fortify Source no snes9x/build.gradle
+        # Isso resolve o erro "size * count is too large for the given buffer"
+        sed -i 's/cFlags "-D__STDC_FORMAT_MACROS"/cFlags "-D__STDC_FORMAT_MACROS -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0"/g' snes9x/build.gradle
+
     # --- REESCRITA SEGURA DO MANIFESTO ---
     - name: Overwrite App Manifest (Safe Fix)
       run: |
@@ -144,15 +151,11 @@ jobs:
         # 4. Remover linhas com SA1.Completed (membro inexistente) - Deleta a linha inteira
         sed -i '/SA1.Completed/d' snes9x/src/main/cpp/sneslib/sa1.cpp
 
-        # 5. Desativar _FORTIFY_SOURCE para evitar erro de buffer overflow check (sdd1.cpp)
-        # Adiciona a flag no Android.mk
-        sed -i '/LOCAL_MODULE/a LOCAL_CFLAGS += -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0' snes9x/src/main/cpp/Android.mk
-
     # --- COMMIT E BUILD ---
     - name: Commit & Push Fixes
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
-        commit_message: "Auto-fix: Build configs and C++ patches for NDK"
+        commit_message: "Auto-fix: Disable NDK Fortify, Gradle 8 & C++ Patches"
         branch: ${{ github.head_ref }}
         file_pattern: '**/*'
 
