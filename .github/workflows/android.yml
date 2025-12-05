@@ -1,18 +1,25 @@
-name: Android CI
+name: Android CI & Auto-Fix
 
 on:
   push:
     branches: [ "master", "main" ]
   pull_request:
     branches: [ "master", "main" ]
+  workflow_dispatch:
+
+# Permissão necessária para o robô poder commitar no repositório
+permissions:
+  contents: write
 
 jobs:
-  build:
+  build-and-fix:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        ref: ${{ github.head_ref }}
 
     - name: Set up JDK 17
       uses: actions/setup-java@v4
@@ -21,23 +28,22 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    # Instala o NDK r26b (necessário para o módulo snes9x)
     - name: Setup Android NDK
       uses: nttld/setup-ndk@v1
       with:
         ndk-version: r26b
         link-to-sdk: true
 
-    # Cria o arquivo gradle.properties necessário para AndroidX
-    - name: Create gradle.properties
+    # --- INÍCIO DAS CORREÇÕES ---
+
+    - name: Create gradle.properties (AndroidX Support)
       run: |
         echo "org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8" > gradle.properties
         echo "android.useAndroidX=true" >> gradle.properties
         echo "android.enableJetifier=true" >> gradle.properties
         echo "android.nonTransitiveRClass=false" >> gradle.properties
 
-    # Cria o arquivo dependencies.gradle necessário para as versões do SDK
-    - name: Create dependencies.gradle
+    - name: Create dependencies.gradle (Dependencies Management)
       run: |
         cat <<EOF > dependencies.gradle
         ext {
@@ -59,18 +65,16 @@ jobs:
         }
         EOF
 
-    # Corrige sintaxe antiga do Gradle (compile -> implementation)
-    - name: Fix Legacy Gradle Syntax
+    - name: Fix Legacy Gradle Syntax (compile -> implementation)
       run: |
         find . -name "build.gradle" -type f -exec sed -i 's/compile /implementation /g' {} +
         find . -name "build.gradle" -type f -exec sed -i 's/testCompile /testImplementation /g' {} +
         find . -name "build.gradle" -type f -exec sed -i 's/androidTestCompile /androidTestImplementation /g' {} +
         find . -name "build.gradle" -type f -exec sed -i 's/provided /compileOnly /g' {} +
-        # Corrige erro de variáveis de projeto
+        # Corrige acesso a variáveis (project.ext -> rootProject.ext)
         find . -name "build.gradle" -type f -exec sed -i 's/project.ext./rootProject.ext./g' {} +
 
-    # Sobrescreve o AndroidManifest.xml principal para corrigir erro do Android 12 (exported=true)
-    - name: Fix App Manifest (Android 12+)
+    - name: Fix App Manifest (Android 12+ Exported Attribute)
       run: |
         cat <<EOF > app/src/main/AndroidManifest.xml
         <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="preferExternal">
@@ -116,10 +120,20 @@ jobs:
         </manifest>
         EOF
 
-    # Limpa manifestos dos módulos para evitar conflito de namespace
-    - name: Clean Module Manifests
+    - name: Clean Module Manifests (Remove Namespace Conflict)
       run: |
          find . -name "AndroidManifest.xml" -not -path "*/app/*" -exec sed -i 's/package="[^"]*"//' {} +
+
+    # --- PASSO DE COMMIT E PUSH ---
+    
+    - name: Commit & Push Fixes
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "Auto-fix: Update to AndroidX, Gradle 8, Android 12 Manifest and NDK"
+        branch: ${{ github.head_ref }}
+        file_pattern: 'build.gradle **/*.gradle **/AndroidManifest.xml gradle.properties'
+        
+    # --- FIM DAS CORREÇÕES ---
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
