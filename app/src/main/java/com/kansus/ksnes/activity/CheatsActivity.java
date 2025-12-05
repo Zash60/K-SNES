@@ -26,12 +26,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-/**
- * Activity where the users can add/enable and remove/disable cheats
- * for the currently running ROM.
- * <p>
- * Created by Charles Nascimento on 29/07/2017.
- */
 public class CheatsActivity extends ListActivity {
 
     //region Constants
@@ -157,16 +151,20 @@ public class CheatsActivity extends ListActivity {
         return true;
     }
 
+    // --- CORREÇÃO AQUI: SWITCH PARA IF-ELSE ---
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_add_cheat:
-                mCurrentCheat = null;
-                showDialog(DIALOG_EDIT_CHEAT);
-                return true;
+        int id = item.getItemId();
+        
+        if (id == R.id.menu_add_cheat) {
+            mCurrentCheat = null;
+            showDialog(DIALOG_EDIT_CHEAT);
+            return true;
         }
+        
         return super.onOptionsItemSelected(item);
     }
+    // ------------------------------------------
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
