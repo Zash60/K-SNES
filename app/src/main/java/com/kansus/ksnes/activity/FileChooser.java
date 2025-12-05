@@ -71,15 +71,17 @@ public class FileChooser extends ListActivity implements FileFilter, View.OnClic
 		return true;
 	}
 
+    // --- CORREÇÃO AQUI: SWITCH PARA IF-ELSE ---
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.menu_refresh:
+		int id = item.getItemId();
+		if (id == R.id.menu_refresh) {
 			changeTo(currentDir);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
+    // ------------------------------------------
 	
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
@@ -132,18 +134,19 @@ public class FileChooser extends ListActivity implements FileFilter, View.OnClic
 		return false;
 	}
 
+    // --- CORREÇÃO AQUI: SWITCH PARA IF-ELSE ---
 	public void onClick(View v) {
-		switch (v.getId()) {
-		case R.id.goto_sdcard:
+		int id = v.getId();
+		
+		if (id == R.id.goto_sdcard) {
 			changeTo(sdcardDir);
-			break;
-		case R.id.goto_parent:
+		} else if (id == R.id.goto_parent) {
 			File parent = currentDir.getParentFile();
 			if (parent != null)
 				changeTo(parent);
-			break;
 		}
 	}
+    // ------------------------------------------
 
 	public boolean accept(File file) {
 		String name = file.getName();
@@ -194,4 +197,4 @@ public class FileChooser extends ListActivity implements FileFilter, View.OnClic
 		setListAdapter(new ArrayAdapter(this,
 				android.R.layout.simple_list_item_1, items));
 	}
-}
+			}
