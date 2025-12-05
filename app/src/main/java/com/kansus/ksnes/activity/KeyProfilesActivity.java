@@ -169,16 +169,18 @@ public class KeyProfilesActivity extends ListActivity {
 		return true;
 	}
 
+    // --- CORREÇÃO AQUI: SWITCH PARA IF-ELSE ---
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.menu_new_profile:
+		int id = item.getItemId();
+		if (id == R.id.menu_new_profile) {
 			currentProfile = null;
 			showDialog(DIALOG_EDIT_PROFILE);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
+    // ------------------------------------------
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
