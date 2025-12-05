@@ -1,34 +1,36 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    namespace 'com.kansus.ksnes.abstractemulator' // Necessário para Gradle 8+
+    compileSdk project.ext.compileSdkVer
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-        defaultPublishConfig 'release'
-        publishNonDefault true
-        multiDexEnabled true
-
+        minSdk project.ext.minSdkVer
+        targetSdk project.ext.targetSdkVer
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    
+    // Adicione isso para compatibilidade com Java 8
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    testCompile 'junit:junit:4.12'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    
+    // Dependências de teste atualizadas para AndroidX
+    androidTestImplementation "androidx.test.espresso:espresso-core:${project.ext.espressoVer}"
+    testImplementation "junit:junit:${project.ext.junitVer}"
+    
+    // Suporte a Annotations (substitui o antigo support-annotations)
+    implementation "androidx.annotation:annotation:1.7.0"
 }
