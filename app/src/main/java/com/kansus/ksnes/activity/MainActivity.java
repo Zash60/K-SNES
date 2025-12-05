@@ -54,38 +54,39 @@ public class MainActivity extends FileChooser {
         return true;
     }
 
+    // --- CORREÇÃO AQUI: SWITCH PARA IF-ELSE ---
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_rom_buddy:
-                Intent intent = getPackageManager().
-                        getLaunchIntentForPackage(ROM_BUDDY_PACKAGE);
-                if (intent == null)
-                    intent = new Intent(Intent.ACTION_VIEW, ROM_BUDDY_URI);
-                else
-                    intent.putExtra("com.momojo.rombud.system", 2);
+        int id = item.getItemId();
 
-                try {
-                    startActivity(intent);
-                } catch (ActivityNotFoundException e) {
-                }
-                return true;
+        if (id == R.id.menu_rom_buddy) {
+            Intent intent = getPackageManager().
+                    getLaunchIntentForPackage(ROM_BUDDY_PACKAGE);
+            if (intent == null)
+                intent = new Intent(Intent.ACTION_VIEW, ROM_BUDDY_URI);
+            else
+                intent.putExtra("com.momojo.rombud.system", 2);
 
-            case R.id.menu_search_roms:
-                startActivity(EmulatorSettings.getSearchROMIntent());
-                return true;
-
-            case R.id.menu_help:
-                startActivity(new Intent(this, HelpActivity.class).
-                        setData(HELP_URI));
-                return true;
-
-            case R.id.menu_settings:
-                startActivity(new Intent(this, EmulatorSettings.class));
-                return true;
+            try {
+                startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+            }
+            return true;
+        } else if (id == R.id.menu_search_roms) {
+            startActivity(EmulatorSettings.getSearchROMIntent());
+            return true;
+        } else if (id == R.id.menu_help) {
+            startActivity(new Intent(this, HelpActivity.class).
+                    setData(HELP_URI));
+            return true;
+        } else if (id == R.id.menu_settings) {
+            startActivity(new Intent(this, EmulatorSettings.class));
+            return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
+    // ------------------------------------------
 
     @Override
     protected Dialog onCreateDialog(int id) {
