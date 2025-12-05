@@ -2,12 +2,17 @@ apply plugin: 'com.android.application'
 
 android {
     namespace 'com.kansus.ksnes'
-    compileSdk project.ext.compileSdkVer
+    
+    // CORREÇÃO: Usando rootProject.ext para garantir acesso às variáveis
+    compileSdk rootProject.ext.compileSdkVer
 
     defaultConfig {
         applicationId "com.kansus.ksnes"
-        minSdk project.ext.minSdkVer
-        targetSdk project.ext.targetSdkVer
+        
+        // CORREÇÃO: Usando rootProject.ext
+        minSdk rootProject.ext.minSdkVer
+        targetSdk rootProject.ext.targetSdkVer
+        
         versionCode 1
         versionName "0.1"
         
@@ -20,7 +25,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -29,22 +34,23 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    
-    // AndroidX & Material
-    implementation project.ext.supportDependencies.appCompat
-    implementation project.ext.supportDependencies.material
-    implementation project.ext.supportDependencies.supportLegacy
+
+    // Bibliotecas AndroidX (acessando via rootProject.ext)
+    implementation rootProject.ext.supportDependencies.appCompat
+    implementation rootProject.ext.supportDependencies.material
+    implementation rootProject.ext.supportDependencies.supportLegacy
+    implementation rootProject.ext.supportDependencies.annotation
 
     // Dagger
-    implementation "com.google.dagger:dagger:${project.ext.daggerVer}"
-    annotationProcessor "com.google.dagger:dagger-compiler:${project.ext.daggerVer}"
+    implementation "com.google.dagger:dagger:${rootProject.ext.daggerVer}"
+    annotationProcessor "com.google.dagger:dagger-compiler:${rootProject.ext.daggerVer}"
     compileOnly 'javax.annotation:jsr250-api:1.0'
 
-    // Tests
-    testImplementation "junit:junit:${project.ext.junitVer}"
-    androidTestImplementation "androidx.test.espresso:espresso-core:${project.ext.espressoVer}"
+    // Testes
+    testImplementation "junit:junit:${rootProject.ext.junitVer}"
+    androidTestImplementation "androidx.test.espresso:espresso-core:${rootProject.ext.espressoVer}"
 
-    // Modules
+    // Módulos locais
     implementation project(':abstractemulator')
     implementation project(':snes9x')
     implementation project(':input')
