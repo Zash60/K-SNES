@@ -1,35 +1,21 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+// Top-level build file
 buildscript {
     repositories {
-        jcenter()
+        google()
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:8.2.0'
     }
 }
-
-apply from: 'dependencies.gradle'
 
 allprojects {
     repositories {
-        jcenter()
-        maven {
-            url "https://maven.google.com"
-        }
+        google()
+        mavenCentral()
     }
 }
 
-allprojects {
-    task hello {
-        doLast { task ->
-            println "I'm $task.project.name"
-        }
-    }
-}
-subprojects {
-    hello {
-        doLast { task ->
-            println "$task.project.name - I depend on K-SNES"
-        }
-    }
+task clean(type: Delete) {
+    delete rootProject.buildDir
 }
