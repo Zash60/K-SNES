@@ -1,17 +1,17 @@
 ext {
-    // Versions
+    // Versões do Android SDK
     compileSdkVer = 34
     minSdkVer = 24
     targetSdkVer = 34
-    
-    // Lib Versions
+
+    // Versões das Bibliotecas
     appCompatVer = '1.7.0'
     materialVer = '1.11.0'
-    daggerVer = '2.50'
     junitVer = '4.13.2'
     espressoVer = '3.5.1'
+    daggerVer = '2.50'
 
-    // Dependencies
+    // Mapa de Dependências (para facilitar o uso nos módulos)
     supportDependencies = [
             appCompat        : "androidx.appcompat:appcompat:${appCompatVer}",
             material         : "com.google.android.material:material:${materialVer}",
