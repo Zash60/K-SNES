@@ -544,7 +544,7 @@ void S9xSetSA1 (uint8 byte, uint32 address)
     case 0x2231:
 	if (byte & 0x80)
     {
-	    // // SA1.Completed = FALSE;
+	    // // // SA1.Completed = FALSE;
     }
 	break;
     case 0x2232:
@@ -568,7 +568,7 @@ void S9xSetSA1 (uint8 byte, uint32 address)
 	    Memory.FillRAM [0x2300] |= 0x20;
 	    if (Memory.FillRAM [0x2201] & 0x20)
 		S9xSetIRQ (SA1_DMA_IRQ_SOURCE);
-	    // // SA1.Completed = TRUE;
+	    // // // SA1.Completed = TRUE;
 	}
 	break;
     case 0x2237:
@@ -584,7 +584,7 @@ void S9xSetSA1 (uint8 byte, uint32 address)
 	    Memory.FillRAM [0x2300] |= 0x20;
 	    if (Memory.FillRAM [0x2201] & 0x20)
 		S9xSetIRQ (SA1_DMA_IRQ_SOURCE);
-	    // // SA1.Completed = TRUE;
+	    // // // SA1.Completed = TRUE;
 	}
 	break;
     case 0x2238:
@@ -758,7 +758,7 @@ static void S9xSA1DMA ()
     Memory.FillRAM [0x2300] |= 0x20;
     if (Memory.FillRAM [0x2201] & 0x20)
 	S9xSetIRQ (SA1_DMA_IRQ_SOURCE);
-    // // SA1.Completed = TRUE;
+    // // // SA1.Completed = TRUE;
 }
 
 void S9xSA1CharConv2 ()
