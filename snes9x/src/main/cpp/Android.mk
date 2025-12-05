@@ -8,6 +8,7 @@ LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE_TAGS := user
+LOCAL_CFLAGS += -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=0
 
 LOCAL_SRC_FILES := $(call all-subdir-java-files)
 
