@@ -1,18 +1,24 @@
-name: Android CI
+name: Android CI & Auto-Fix
 
 on:
   push:
     branches: [ "master", "main" ]
   pull_request:
     branches: [ "master", "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
-  build:
+  build-and-fix:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        ref: ${{ github.head_ref }}
 
     - name: Set up JDK 17
       uses: actions/setup-java@v4
@@ -26,6 +32,84 @@ jobs:
       with:
         ndk-version: r26b
         link-to-sdk: true
+
+    # --- PASSO 1: Configuração do Gradle ---
+    - name: Create gradle.properties
+      run: |
+        echo "org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8" > gradle.properties
+        echo "android.useAndroidX=true" >> gradle.properties
+        echo "android.enableJetifier=true" >> gradle.properties
+        echo "android.nonTransitiveRClass=false" >> gradle.properties
+
+    - name: Create dependencies.gradle
+      run: |
+        cat <<EOF > dependencies.gradle
+        ext {
+            compileSdkVer = 34
+            minSdkVer = 24
+            targetSdkVer = 34
+            appCompatVer = '1.7.0'
+            materialVer = '1.11.0'
+            daggerVer = '2.50'
+            junitVer = '4.13.2'
+            espressoVer = '3.5.1'
+            supportDependencies = [
+                    appCompat        : "androidx.appcompat:appcompat:1.7.0",
+                    material         : "com.google.android.material:material:1.11.0",
+                    constraintLayout : "androidx.constraintlayout:constraintlayout:2.1.4",
+                    supportLegacy    : "androidx.legacy:legacy-support-v4:1.0.0",
+                    annotation       : "androidx.annotation:annotation:1.7.0"
+            ]
+        }
+        EOF
+
+    # --- PASSO 2: Correção de Manifestos e Gradle ---
+    - name: Fix Legacy Gradle & Manifests
+      run: |
+        # Gradle Syntax
+        find . -name "build.gradle" -type f -exec sed -i 's/compile /implementation /g' {} +
+        find . -name "build.gradle" -type f -exec sed -i 's/testCompile /testImplementation /g' {} +
+        find . -name "build.gradle" -type f -exec sed -i 's/androidTestCompile /androidTestImplementation /g' {} +
+        find . -name "build.gradle" -type f -exec sed -i 's/provided /compileOnly /g' {} +
+        find . -name "build.gradle" -type f -exec sed -i 's/project.ext./rootProject.ext./g' {} +
+        
+        # Manifest Cleaning
+        find . -name "AndroidManifest.xml" -not -path "*/app/*" -exec sed -i 's/package="[^"]*"//' {} +
+        
+        # Fix App Manifest (Android 12+)
+        sed -i 's/<activity/<activity android:exported="true"/g' app/src/main/AndroidManifest.xml
+        # Remove exported from activities that don't need it (simple cleanup/fallback logic handled by merger usually, but 'true' is safer for build)
+
+    # --- PASSO 3: Correção do Código C++ (NDK 64-bits) ---
+    - name: Patch C++ Source Code
+      run: |
+        # 1. emulator.cpp: Adicionar includes faltantes
+        sed -i '1i #include <cstring>\n#include <cstdio>\n#include <cstdlib>' snes9x/src/main/cpp/common/emulator.cpp
+        
+        # 2. fxdbg.cpp: Corrigir formato de string (%d vs long) para 64-bits
+        sed -i 's/GSU.pvSreg - GSU.avReg/(int)(GSU.pvSreg - GSU.avReg)/g' snes9x/src/main/cpp/sneslib/fxdbg.cpp
+        sed -i 's/GSU.pvDreg - GSU.avReg/(int)(GSU.pvDreg - GSU.avReg)/g' snes9x/src/main/cpp/sneslib/fxdbg.cpp
+        
+        # 3. spc700.cpp: Corrigir aviso de precedência de macro (PushW)
+        sed -i 's/(w >> 8)/((w) >> 8)/g' snes9x/src/main/cpp/sneslib/spc700.cpp
+        
+        # 4. JNIHelp.c: Corrigir cast de ponteiro para int (fatal em 64-bits)
+        sed -i 's/(int)ret/(long)ret/g' snes9x/src/main/cpp/common/libnativehelper/JNIHelp.c
+        
+        # 5. sa1.cpp: Aplicar correções de 64-bits e remover código quebrado
+        sed -i 's/(int) GetAddress/(long) GetAddress/g' snes9x/src/main/cpp/sneslib/sa1.cpp
+        sed -i 's/(int) Setaddress/(long) Setaddress/g' snes9x/src/main/cpp/sneslib/sa1.cpp
+        sed -i 's/S9xSA1SetPCBase (SA1.PC)/S9xSA1SetPCBase (SA1Registers.PC)/g' snes9x/src/main/cpp/sneslib/sa1.cpp
+        # Comentar linhas com SA1.Completed (membro inexistente)
+        sed -i 's/SA1.Completed/\/\/ SA1.Completed/g' snes9x/src/main/cpp/sneslib/sa1.cpp
+
+    # --- PASSO 4: Commit das Correções ---
+    - name: Commit & Push Fixes
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "Auto-fix: Gradle, AndroidX, Manifest and C++ 64-bit patches"
+        branch: ${{ github.head_ref }}
+        file_pattern: '**/*'
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
