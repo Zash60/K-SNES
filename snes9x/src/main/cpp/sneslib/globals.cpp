@@ -101,7 +101,6 @@
 #include "soundux.h"
 #include "cheats.h"
 #include "sa1.h"
-#include "netplay.h"
 #include "spc7110.h"
 
 START_EXTERN_C

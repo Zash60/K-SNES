@@ -97,7 +97,6 @@
 #include "gfx.h"
 #include "display.h"
 #include "sa1.h"
-#include "netplay.h"
 #include "sdd1.h"
 #include "srtc.h"
 #include "spc7110.h"

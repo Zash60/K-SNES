@@ -11,7 +11,7 @@ import com.kansus.ksnes.abstractemulator.video.VideoModule;
 import com.kansus.ksnes.abstractemulator.input.InputListener;
 import com.kansus.ksnes.abstractemulator.input.InputModule;
 import com.kansus.ksnes.abstractemulator.input.source.TouchInputSource;
-import com.kansus.ksnes.abstractemulator.multiplayer.MultiPlayerModule;
+
 
 import java.nio.Buffer;
 
@@ -29,7 +29,7 @@ class S9xEmulator implements Emulator,
 
     private VideoModule mVideoModule;
     private InputModule mInputModule;
-    private MultiPlayerModule mMultiPlayerModule;
+
     private CheatsModule mCheatsModule;
 
     private VideoModule.VideoFrameListener mFrameDrawnListener;
@@ -158,9 +158,7 @@ class S9xEmulator implements Emulator,
     }
 
     @Override
-    public MultiPlayerModule getMultiPlayerModule() {
-        return mMultiPlayerModule;
-    }
+
 
     @Override
     public final CheatsModule getCheatsModule() {
@@ -195,9 +193,7 @@ class S9xEmulator implements Emulator,
     }
 
     @Override
-    public void setMultiPlayerModule(MultiPlayerModule multiPlayerModule) {
-        mMultiPlayerModule = multiPlayerModule;
-    }
+
 
     @Override
     public void setCheatsModule(CheatsModule cheatsModule) {
@@ -218,8 +214,7 @@ class S9xEmulator implements Emulator,
 
     //region Native
 
-    @Override
-    public native void setFrameUpdateListener(MultiPlayerModule.FrameUpdateListener frameUpdateListener);
+
 
     @Override
     public native void setSurface(SurfaceHolder surface);

@@ -3,7 +3,7 @@ package com.kansus.ksnes.snes9x;
 import com.kansus.ksnes.abstractemulator.cheats.CheatsModule;
 import com.kansus.ksnes.abstractemulator.video.VideoModule;
 import com.kansus.ksnes.abstractemulator.input.InputModule;
-import com.kansus.ksnes.abstractemulator.multiplayer.MultiPlayerModule;
+
 
 /**
  * Builder for creating a {@link S9xEmulator}.
@@ -14,7 +14,7 @@ public class S9xEmulatorBuilder {
 
     private VideoModule mVideoModule;
     private InputModule mInputModule;
-    private MultiPlayerModule mMultiPlayerModule;
+
     private CheatsModule mCheatsModule;
 
     /**
@@ -39,21 +39,12 @@ public class S9xEmulatorBuilder {
         return this;
     }
 
-    /**
-     * Sets the multiplayer module.
-     *
-     * @param multiPlayerModule The multiplayer module.
-     * @return The builder instance.
-     */
-    public S9xEmulatorBuilder setMultiPlayerModule(MultiPlayerModule multiPlayerModule) {
-        mMultiPlayerModule = multiPlayerModule;
-        return this;
-    }
+
 
     /**
      * Sets the cheats module.
      *
-     * @param cheatsModule The multiplayer module.
+     * @param cheatsModule The cheats module.
      * @return The builder instance.
      */
     public S9xEmulatorBuilder setCheatsModule(CheatsModule cheatsModule) {
@@ -70,7 +61,7 @@ public class S9xEmulatorBuilder {
         S9xEmulator emulator = new S9xEmulator();
         emulator.setRenderingModule(mVideoModule);
         emulator.setInputModule(mInputModule);
-        emulator.setMultiPlayerModule(mMultiPlayerModule);
+
         emulator.setCheatsModule(mCheatsModule);
 
         return emulator;

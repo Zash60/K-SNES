@@ -98,7 +98,6 @@
 #include "display.h"
 #include "gfx.h"
 #include "soundux.h"
-#include "netplay.h"
 #include "movie.h"
 #include "..\AVIOutput.h"
 #include "..\language.h"

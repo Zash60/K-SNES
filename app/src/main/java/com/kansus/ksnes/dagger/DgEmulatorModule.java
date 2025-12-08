@@ -10,11 +10,11 @@ import com.kansus.ksnes.abstractemulator.cheats.CheatsModule;
 import com.kansus.ksnes.abstractemulator.Emulator;
 import com.kansus.ksnes.abstractemulator.video.VideoModule;
 import com.kansus.ksnes.abstractemulator.input.InputModule;
-import com.kansus.ksnes.abstractemulator.multiplayer.MultiPlayerModule;
+
 import com.kansus.ksnes.dagger.scopes.EmulatorScope;
 import com.kansus.ksnes.dagger.scopes.PerActivity;
 import com.kansus.ksnes.input.DefaultInputModule;
-import com.kansus.ksnes.multiplayer.DefaultMultiPlayerModule;
+
 import com.kansus.ksnes.snes9x.S9xCheatsModule;
 import com.kansus.ksnes.snes9x.S9xEmulatorBuilder;
 
@@ -40,12 +40,7 @@ public class DgEmulatorModule {
         return new DefaultInputModule(view);
     }
 
-    @Provides
-    @PerActivity
-    public MultiPlayerModule provideMultiPlayerModule() {
-        Log.d(LOG_TAG, "provideMultiPlayerModule");
-        return new DefaultMultiPlayerModule();
-    }
+
 
     @Provides
     @PerActivity
@@ -65,13 +60,11 @@ public class DgEmulatorModule {
     @PerActivity
     public Emulator provideEmulator(VideoModule videoModule,
                                     InputModule inputModule,
-                                    MultiPlayerModule multiPlayerModule,
                                     CheatsModule cheatsModule) {
         Log.d(LOG_TAG, "provideEmulator");
         return new S9xEmulatorBuilder()
                 .setRenderingModule(videoModule)
                 .setInputModule(inputModule)
-                .setMultiPlayerModule(multiPlayerModule)
                 .setCheatsModule(cheatsModule)
                 .build();
     }

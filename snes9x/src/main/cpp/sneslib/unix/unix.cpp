@@ -161,7 +161,6 @@ extern "C" void TraceSPC (unsigned char *PC, unsigned short YA, unsigned char X,
 #endif
 
 #ifdef _NETPLAY_SUPPORT
-#include "netplay.h"
 #endif
 
 uint32 joypads [5] = {0};

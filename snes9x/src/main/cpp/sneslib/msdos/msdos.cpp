@@ -116,7 +116,6 @@
 #include "soundux.h"
 
 #ifdef NETPLAY_SUPPORT
-#include "netplay.h"
 #endif
 
 #define COUNT(a) (sizeof(a) / sizeof(a[0]))

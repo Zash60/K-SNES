@@ -117,7 +117,6 @@
 #include "soundux.h"
 
 #ifdef NETPLAY_SUPPORT
-#include "netplay.h"
 #endif
 
 uint32 joypads [5] = {0};
