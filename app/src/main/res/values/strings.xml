@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <resources>
     <!-- The name of the application. -->
     <string name="app_label">K-SNES</string>
@@ -33,7 +32,8 @@
 
     <!-- Menu -->
     <string name="settings">Settings</string>
-    <string name="reset">Reset</st   <string name="fast_forward">Fast forward</string>
+    <string name="reset">Reset</string>
+    <string name="fast_forward">Fast forward</string>
     <string name="no_fast_forward">Regular</string>
     <string name="screenshot">Screenshot</string>
     <string name="screenshot_saved">Screenshot saved to Gallery.</string>
@@ -42,7 +42,7 @@
     <string name="cheats">Cheats</string>
     <string name="close">Close</string>
 
-g name="key_profiles">Key profiles</string>
+    <string name="key_profiles">Key profiles</string>
     <string name="new_profile">New profile</string>
     <string name="new_profile_title">Profile name</string>
     <string name="new_profile_error">Error creating the new profile.</string>
@@ -128,7 +128,8 @@ g name="key_profiles">Key profiles</string>
     <string name="enable_trackball">Trackball as D-pad</string>
     <string name="trackball_sensitivity">Trackball sensitivity</string>
     <string name="use_sensor">Use sensor as</string>
-    <string name="sensor_sensitivity">Sensor sensitivity</strin  <string name="other_settings">Other settings</string>
+    <string name="sensor_sensitivity">Sensor sensitivity</string>
+    <string name="other_settings">Other settings</string>
     <string name="cheating">Cheating</string>
     <string name="enable_cheats">Enable cheats</string>
     <string name="user_settings">User settings</string>
@@ -231,5 +232,5 @@ g name="key_profiles">Key profiles</string>
         <item>Unspecified</item>
         <item>Landscape</item>
         <item>Portrait</item>
-    </string-a</resources>
-</string>
+    </string-array>
+</resources>
