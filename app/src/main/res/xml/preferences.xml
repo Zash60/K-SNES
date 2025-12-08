@@ -234,7 +234,9 @@
             android:key="sensorSensitivity"
             android:title="@string/sensor_sensitivity"
             androidemu:maxValue="9" />
-    </PreferenceScreeeScreen android:title="@string/other_settings">
+    </PreferenceScreen>
+
+    <PreferenceScreen android:title="@string/other_settings">
         <PreferenceCategory android:title="@string/cheating">
             <CheckBoxPreference
                 android:defaultValue="true"
