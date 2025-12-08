@@ -3,9 +3,7 @@ package com.kansus.ksnes.abstractemulator;
 import android.view.SurfaceHolder;
 
 import com.kansus.ksnes.abstractemulator.cheats.CheatsModule;
-import com.kansus.ksnes.abstractemulator.input.InputModule;
-import com.kansus.ksnes.abstractemulator.multiplayer.MultiPlayerModule;
-import com.kansus.ksnes.abstractemulator.video.VideoModule;
+import com.kansus.ksnes.abstractemulator.input.InputModule;import com.kansus.ksnes.abstractemulator.video.VideoModule;
 
 import java.nio.Buffer;
 
@@ -31,13 +29,7 @@ public interface Emulator {
     VideoModule getVideoModule();
 
     /**
-     * Returns the current multiplayer module of the emulator.
-     *
-     * @return The current multiplayer module of the emulator.
-     */
-    MultiPlayerModule getMultiPlayerModule();
-
-    /**
+*
      * Returns the current cheats module of the emulator.
      *
      * @return The current cheats module of the emulator.
@@ -58,13 +50,7 @@ public interface Emulator {
      */
     void setRenderingModule(VideoModule videoModule);
 
-    /**
-     * Sets multiplayer module of the emulator.
-     *
-     * @param multiPlayerModule The multiplayer module.
-     */
-    void setMultiPlayerModule(MultiPlayerModule multiPlayerModule);
-
+ 
     /**
      * Sets the cheats module of the emulator.
      *
@@ -90,11 +76,7 @@ public interface Emulator {
     /**
      * Unloads the currently loaded ROM.
      */
-    void unloadROM();
-
-    void setFrameUpdateListener(MultiPlayerModule.FrameUpdateListener frameUpdateListener);
-
-    void setVideoFrameListener(VideoModule.VideoFrameListener videoFrameListener);
+    void unloadROM();    void setVideoFrameListener(VideoModule.VideoFrameListener videoFrameListener);
 
     /**
      * Sets the {@link SurfaceHolder} holding the surface where the

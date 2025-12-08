@@ -157,11 +157,7 @@ class S9xEmulator implements Emulator,
         return mVideoModule;
     }
 
-    @Override
-
-
-    @Override
-    public final CheatsModule getCheatsModule() {
+    @Override\n    public final CheatsModule getCheatsModule() {
         return mCheatsModule;
     }
 
@@ -192,11 +188,7 @@ class S9xEmulator implements Emulator,
         mVideoModule.setOnTrackballListener(mInputModule);
     }
 
-    @Override
-
-
-    @Override
-    public void setCheatsModule(CheatsModule cheatsModule) {
+    @Override\n    public void setCheatsModule(CheatsModule cheatsModule) {
         mCheatsModule = cheatsModule;
     }
 

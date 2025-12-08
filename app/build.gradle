@@ -54,7 +54,7 @@ dependencies {
     implementation project(':abstractemulator')
     implementation project(':snes9x')
     implementation project(':input')
-    implementation project(':multiplayer')
+
     implementation project(':preferences')
     implementation project(':roms')
 }

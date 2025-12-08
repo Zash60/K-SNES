@@ -234,29 +234,7 @@
             android:key="sensorSensitivity"
             android:title="@string/sensor_sensitivity"
             androidemu:maxValue="9" />
-    </PreferenceScreen>
-
-    <PreferenceScreen android:title="@string/netplay_settings">
-        <com.kansus.ksnes.preference.SeekBarPreference
-            android:key="maxFramesAhead"
-            android:summary="@string/max_frames_ahead_summary"
-            android:title="@string/max_frames_ahead"
-            androidemu:maxValue="10" />
-
-        <CheckBoxPreference
-            android:key="autoSyncClient"
-            android:title="@string/auto_sync_client" />
-
-        <ListPreference
-            android:defaultValue="30"
-            android:dependency="autoSyncClient"
-            android:entries="@array/auto_sync_client_entries"
-            android:entryValues="@array/auto_sync_client_entryvalues"
-            android:key="autoSyncClientInterval"
-            android:title="@string/auto_sync_client_interval" />
-    </PreferenceScreen>
-
-    <PreferenceScreen android:title="@string/other_settings">
+    </PreferenceScreeeScreen android:title="@string/other_settings">
         <PreferenceCategory android:title="@string/cheating">
             <CheckBoxPreference
                 android:defaultValue="true"

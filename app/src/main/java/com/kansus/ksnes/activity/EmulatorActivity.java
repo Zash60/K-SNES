@@ -34,21 +34,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kansus.ksnes.DefaultVideoModule;
-import com.kansus.ksnes.InetAddressUtils;
-import com.kansus.ksnes.KSNESApplication;
+mport com.kansus.ksnes.KSNESApplication;
 import com.kansus.ksnes.R;
 import com.kansus.ksnes.abstractemulator.Emulator;
-import com.kansus.ksnes.abstractemulator.input.InputModule;
-import com.kansus.ksnes.abstractemulator.multiplayer.MultiPlayerModule;
-import com.kansus.ksnes.abstractemulator.video.VideoModule;
+import com.kansus.ksnes.abstractemulator.input.InputModule;import com.kansus.ksnes.abstractemulator.video.VideoModule;
 import com.kansus.ksnes.dagger.DaggerDgEmulatorComponent;
 import com.kansus.ksnes.dagger.DgActivityModule;
 import com.kansus.ksnes.dagger.DgEmulatorComponent;
 import com.kansus.ksnes.dagger.DgEmulatorModule;
 import com.kansus.ksnes.media.MediaScanner;
 import com.kansus.ksnes.service.EmulatorService;
-import com.kansus.ksnes.service.NetPlayService;
-
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -64,7 +59,7 @@ import java.util.zip.ZipOutputStream;
 import javax.inject.Inject;
 
 public class EmulatorActivity extends Activity implements
-        MultiPlayerModule.FrameUpdateListener,
+        
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static final String LOG_TAG = "K-SNES";
@@ -79,12 +74,7 @@ public class EmulatorActivity extends Activity implements
     private static final int REQUEST_BT_DEVICE = 5;
 
     private static final int DIALOG_QUIT_GAME = 1;
-    private static final int DIALOG_REPLACE_GAME = 2;
-    private static final int DIALOG_WIFI_CONNECT = 3;
-
-    private static final int NETPLAY_TCP_PORT = 5369;
-    private static final int MESSAGE_SYNC_CLIENT = 1000;
-
+    private static final int DIALOG_REPLACE_GAME = 2
     @Inject
     Emulator mEmulator;
 
@@ -101,13 +91,7 @@ public class EmulatorActivity extends Activity implements
     private SharedPreferences sharedPrefs;
     private Intent newIntent;
     private MediaScanner mediaScanner;
-
-    private NetWaitDialog waitDialog;
-    private NetPlayService netPlayService;
-    private NetPlayHandler netPlayHandler = new NetPlayHandler(this);
-    private int autoSyncClientInterval;
-
-    @Override
+  @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -196,13 +180,7 @@ public class EmulatorActivity extends Activity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        if (mEmulator != null)
-            mEmulator.unloadROM();
-        onDisconnect();
-
-        stopService(new Intent(this, EmulatorService.class));
-    }
+        if (mEmulator != null)\n            mEmulator.unloadROM();\n\n        stopService(new Intent(this, EmulatorService.class));  }
 
     @Override
     protected void onPause() {
@@ -258,21 +236,13 @@ public class EmulatorActivity extends Activity implements
                 return createQuitGameDialog();
             case DIALOG_REPLACE_GAME:
                 return createReplaceGameDialog();
-            case DIALOG_WIFI_CONNECT:
-                return createWifiConnectDialog();
-        }
+      }
         return super.onCreateDialog(id);
     }
 
     @Override
     protected void onPrepareDialog(int id, Dialog dialog) {
-        switch (id) {
-            case DIALOG_WIFI_CONNECT:
-                TextView v = dialog.findViewById(R.id.port);
-                if (v.getText().length() == 0)
-                    v.setText(String.valueOf(NETPLAY_TCP_PORT));
-                break;
-        }
+        switch (id)      }
     }
 
     @Override
@@ -309,28 +279,13 @@ public class EmulatorActivity extends Activity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        getMenuInflater().inflate(R.menu.emulator, menu);
-
-        if (BluetoothAdapter.getDefaultAdapter() == null) {
-            menu.findItem(R.id.menu_bluetooth_server).setVisible(false);
-            menu.findItem(R.id.menu_bluetooth_client).setVisible(false);
-        }
-        return true;
+        getMenuInflater().inflate(R.menu.emulator, menu);        return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        pauseEmulator();
-
-        final boolean netplay = (netPlayService != null);
-        menu.findItem(R.id.menu_netplay_connect).setVisible(!netplay);
-        menu.findItem(R.id.menu_netplay_disconnect).setVisible(netplay);
-        menu.findItem(R.id.menu_netplay_sync).setVisible(netplay);
-        menu.findItem(R.id.menu_cheats).setVisible(!netplay);
-        menu.findItem(R.id.menu_fast_forward).setVisible(!netplay);
-
-        menu.findItem(R.id.menu_cheats).setEnabled(mEmulator.getCheatsModule() != null);
+        pauseEmulator();     menu.findItem(R.id.menu_cheats).setEnabled(mEmulator.getCheatsModule() != null);
         int fastForwardTitle = inFastForward ? R.string.no_fast_forward : R.string.fast_forward;
         menu.findItem(R.id.menu_fast_forward).setTitle(fastForwardTitle);
 
@@ -346,15 +301,7 @@ public class EmulatorActivity extends Activity implements
             startActivity(new Intent(this, EmulatorSettings.class));
             return true;
         } else if (id == R.id.menu_reset) {
-            try {
-                if (netPlayService != null)
-                    netPlayService.sendResetROM();
-                mEmulator.reset();
-            } catch (IOException e) {
-                Log.e(LOG_TAG, e.getMessage());
-            }
-            return true;
-        } else if (id == R.id.menu_fast_forward) {
+          mEmulator.reset();\n            return true;\n  } else if (id == R.id.menu_fast_forward) {
             onFastForward();
             return true;
         } else if (id == R.id.menu_screenshot) {
@@ -368,28 +315,7 @@ public class EmulatorActivity extends Activity implements
             return true;
         } else if (id == R.id.menu_load_state) {
             onLoadState();
-            return true;
-        } else if (id == R.id.menu_wifi_server) {
-            onWifiServer();
-            return true;
-        } else if (id == R.id.menu_wifi_client) {
-            showDialog(DIALOG_WIFI_CONNECT);
-            return true;
-        } else if (id == R.id.menu_bluetooth_server) {
-            if (checkBluetoothEnabled(REQUEST_ENABLE_BT_SERVER))
-                onBluetoothServer();
-            return true;
-        } else if (id == R.id.menu_bluetooth_client) {
-            if (checkBluetoothEnabled(REQUEST_ENABLE_BT_CLIENT))
-                onBluetoothClient();
-            return true;
-        } else if (id == R.id.menu_netplay_disconnect) {
-            onDisconnect();
-            return true;
-        } else if (id == R.id.menu_netplay_sync) {
-            onNetPlaySync();
-            return true;
-        } else if (id == R.id.menu_close) {
+            return tru (id == R.id.menu_close) {
             finish();
             return true;
         }
@@ -429,24 +355,7 @@ public class EmulatorActivity extends Activity implements
                 }
                 break;
         }
-    }
-
-    private static int makeKeyStates(int p1, int p2) {
-        return (p2 << 16) | (p1 & 0xffff);
-    }
-
-    @Override
-    public int onFrameUpdate(int keys) throws IOException, InterruptedException {
-        final int remote = netPlayService.sendFrameUpdate(keys);
-
-        if (netPlayService.isServer()) {
-            return makeKeyStates(keys, remote);
-        } else {
-            return makeKeyStates(remote, keys);
-        }
-    }
-
-    @Override
+e
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
         if (key.startsWith("gamepad")) {
             mEmulator.getInputModule().loadKeyBindings(prefs);

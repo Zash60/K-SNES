@@ -6,7 +6,7 @@ echo "=== Iniciando Correção dos Manifestos ==="
 # Isso remove os avisos "Setting the namespace via the package attribute... is no longer supported"
 echo "Limpando manifestos dos módulos..."
 
-MODULES=("input" "multiplayer" "preferences" "roms" "snes9x" "abstractemulator")
+MODULES=("input" "preferences" "roms" "snes9x" "abstractemulator")
 
 for mod in "${MODULES[@]}"; do
     MANIFEST_PATH="$mod/src/main/AndroidManifest.xml"

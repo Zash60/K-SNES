@@ -33,15 +33,7 @@
 
     <!-- Menu -->
     <string name="settings">Settings</string>
-    <string name="reset">Reset</string>
-    <string name="netplay_connect">Net-play</string>
-    <string name="netplay_disconnect">Disconnect</string>
-    <string name="wifi_server">Wi-Fi (Server)</string>
-    <string name="wifi_client">Wi-Fi (Client))</string>
-    <string name="bluetooth_server">Bluetooth (Server) </string>
-    <string name="bluetooth_client">Bluetooth (Client)</string>
-    <string name="netplay_sync">Sync</string>
-    <string name="fast_forward">Fast forward</string>
+    <string name="reset">Reset</st   <string name="fast_forward">Fast forward</string>
     <string name="no_fast_forward">Regular</string>
     <string name="screenshot">Screenshot</string>
     <string name="screenshot_saved">Screenshot saved to Gallery.</string>
@@ -50,19 +42,7 @@
     <string name="cheats">Cheats</string>
     <string name="close">Close</string>
 
-    <string name="connection_closed">Remote disconnected.</string>
-    <string name="connect_failed">Connecting to remote failed.</string>
-    <string name="protocol_incompatible">Protocol incompatible. Please update both ends to the latest version!</string>
-    <string name="wifi_not_available">Wi-Fi network is not available!</string>
-    <string name="wifi_server_listening">Waiting for connection on:\n\nIP: %1$s\nPort: %2$d</string>
-    <string name="client_connecting">Connecting to device…</string>
-    <string name="bluetooth_server_listening">Waiting for connection…\n\nClick here to make this device discoverable.</string>
-    <string name="ip_address">IP:</string>
-    <string name="port">Port:</string>
-    <string name="invalid_ip_address">Invalid IP address.</string>
-    <string name="invalid_port">Invalid port.</string>
-
-    <string name="key_profiles">Key profiles</string>
+g name="key_profiles">Key profiles</string>
     <string name="new_profile">New profile</string>
     <string name="new_profile_title">Profile name</string>
     <string name="new_profile_error">Error creating the new profile.</string>
@@ -148,13 +128,7 @@
     <string name="enable_trackball">Trackball as D-pad</string>
     <string name="trackball_sensitivity">Trackball sensitivity</string>
     <string name="use_sensor">Use sensor as</string>
-    <string name="sensor_sensitivity">Sensor sensitivity</string>
-    <string name="netplay_settings">Net-play settings</string>
-    <string name="max_frames_ahead">Max frames ahead</string>
-    <string name="max_frames_ahead_summary">Values other than 0 may cause significant sync problem!</string>
-    <string name="auto_sync_client">Auto sync client</string>
-    <string name="auto_sync_client_interval">Auto sync interval</string>
-    <string name="other_settings">Other settings</string>
+    <string name="sensor_sensitivity">Sensor sensitivity</strin  <string name="other_settings">Other settings</string>
     <string name="cheating">Cheating</string>
     <string name="enable_cheats">Enable cheats</string>
     <string name="user_settings">User settings</string>
@@ -257,13 +231,4 @@
         <item>Unspecified</item>
         <item>Landscape</item>
         <item>Portrait</item>
-    </string-array>
-
-    <string-array name="auto_sync_client_entries">
-        <item>10 seconds</item>
-        <item>20 seconds</item>
-        <item>30 seconds</item>
-        <item>45 seconds</item>
-        <item>1 minute</item>
-    </string-array>
-</resources>
+    </string-a</resources>
