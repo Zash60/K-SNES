@@ -1,0 +1,34 @@
+name: Auto-Fix C++ 64-bit Pointer Casts
+
+on:
+  # Permite que você execute este workflow manualmente pela aba "Actions" do GitHub
+  workflow_dispatch:
+
+# Permissão para que a Action possa fazer um commit de volta no seu repositório
+permissions:
+  contents: write
+
+jobs:
+  fix-and-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Baixa o código do seu repositório
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Executa a correção específica no arquivo getset.h
+      - name: Patch C++ for 64-bit Pointer Casts
+        run: |
+          echo "Applying 64-bit compatibility patch to getset.h..."
+          sed -i 's/(int) GetAddress/(long) GetAddress/g' snes9x/src/main/cpp/sneslib/getset.h
+          sed -i 's/(int) SetAddress/(long) SetAddress/g' snes9x/src/main/cpp/sneslib/getset.h
+          echo "Patch applied."
+
+      # 3. Faz o commit e push da alteração para o seu branch
+      - name: Commit and Push Fix
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Fix(C++): Correct pointer casts for 64-bit compatibility"
+          branch: ${{ github.ref_name }}
+          file_pattern: 'snes9x/src/main/cpp/sneslib/getset.h'
