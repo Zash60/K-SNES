@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:androidemu="http://androidemu.com/apk/res/android">
 
@@ -234,13 +233,9 @@
             android:key="sensorSensitivity"
             android:title="@string/sensor_sensitivity"
             androidemu:maxValue="9" />
-<<<<<<< HEAD
     </PreferenceScreen>
 
     <PreferenceScreen android:title="@string/other_settings">
-=======
-    </PreferenceScreeeScreen android:title="@string/other_settings">
->>>>>>> 7c1f340 (Remove multiplayer functionality, fix S9xEmulator compilation errors, and update android.yml)
         <PreferenceCategory android:title="@string/cheating">
             <CheckBoxPreference
                 android:defaultValue="true"
