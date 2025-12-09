@@ -649,42 +649,42 @@ void S9xFreezeToStream ()
     sprintf (buffer, "NAM:%06d:%s%c", strlen (Memory.ROMFilename) + 1,
 		Memory.ROMFilename, 0);
     statef_write (buffer, strlen (buffer) + 1);
-    FreezeStruct ("CPU", &CPU, SnapCPU, COUNT (SnapCPU));
-    FreezeStruct ("REG", &Registers, SnapRegisters, COUNT (SnapRegisters));
-    FreezeStruct ("PPU", &PPU, SnapPPU, COUNT (SnapPPU));
-    FreezeStruct ("DMA", DMA, SnapDMA, COUNT (SnapDMA));
+    FreezeStruct ((char *)"CPU", &CPU, SnapCPU, COUNT (SnapCPU));
+    FreezeStruct ((char *)"REG", &Registers, SnapRegisters, COUNT (SnapRegisters));
+    FreezeStruct ((char *)"PPU", &PPU, SnapPPU, COUNT (SnapPPU));
+    FreezeStruct ((char *)"DMA", DMA, SnapDMA, COUNT (SnapDMA));
 
 	// RAM and VRAM
-    FreezeBlock ("VRA", Memory.VRAM, 0x10000);
-    FreezeBlock ("RAM", Memory.RAM, 0x20000);
-    FreezeBlock ("SRA", ::SRAM, 0x20000);
-    FreezeBlock ("FIL", Memory.FillRAM, 0x8000);
+    FreezeBlock ((char *)"VRA", Memory.VRAM, 0x10000);
+    FreezeBlock ((char *)"RAM", Memory.RAM, 0x20000);
+    FreezeBlock ((char *)"SRA", ::SRAM, 0x20000);
+    FreezeBlock ((char *)"FIL", Memory.FillRAM, 0x8000);
     if (Settings.APUEnabled)
     {
 		// APU
-		FreezeStruct ("APU", &APU, SnapAPU, COUNT (SnapAPU));
-		FreezeStruct ("ARE", &APURegisters, SnapAPURegisters,
+		FreezeStruct ((char *)"APU", &APU, SnapAPU, COUNT (SnapAPU));
+		FreezeStruct ((char *)"ARE", &APURegisters, SnapAPURegisters,
 			COUNT (SnapAPURegisters));
-		FreezeBlock ("ARA", IAPU.RAM, 0x10000);
-		FreezeStruct ("SOU", &SoundData, SnapSoundData,
+		FreezeBlock ((char *)"ARA", IAPU.RAM, 0x10000);
+		FreezeStruct ((char *)"SOU", &SoundData, SnapSoundData,
 			COUNT (SnapSoundData));
     }
     if (Settings.SA1)
     {
 		SA1Registers.PC = SA1.PC - SA1.PCBase;
 		S9xSA1PackStatus ();
-		FreezeStruct ("SA1", &SA1, SnapSA1, COUNT (SnapSA1));
-		FreezeStruct ("SAR", &SA1Registers, SnapSA1Registers, 
+		FreezeStruct ((char *)"SA1", &SA1, SnapSA1, COUNT (SnapSA1));
+		FreezeStruct ((char *)"SAR", &SA1Registers, SnapSA1Registers, 
 			COUNT (SnapSA1Registers));
     }
 	
 	if (Settings.SPC7110)
     {
-		FreezeStruct ("SP7", &s7r, SnapSPC7110, COUNT (SnapSPC7110));
+		FreezeStruct ((char *)"SP7", &s7r, SnapSPC7110, COUNT (SnapSPC7110));
     }
 	if(Settings.SPC7110RTC)
 	{
-		FreezeStruct ("RTC", &rtc_f9, SnapS7RTC, COUNT (SnapS7RTC));
+		FreezeStruct ((char *)"RTC", &rtc_f9, SnapS7RTC, COUNT (SnapS7RTC));
 	}
 #if 0
 	if (S9xMovieActive ())
@@ -756,43 +756,43 @@ int S9xUnfreezeFromStream ()
 
 	do
 	{
-		if ((result = UnfreezeStructCopy ("CPU", &local_cpu, SnapCPU, COUNT (SnapCPU))) != SUCCESS)
+		if ((result = UnfreezeStructCopy ((char *)"CPU", &local_cpu, SnapCPU, COUNT (SnapCPU))) != SUCCESS)
 			break;
-		if ((result = UnfreezeStructCopy ("REG", &local_registers, SnapRegisters, COUNT (SnapRegisters))) != SUCCESS)
+		if ((result = UnfreezeStructCopy ((char *)"REG", &local_registers, SnapRegisters, COUNT (SnapRegisters))) != SUCCESS)
 			break;
-		if ((result = UnfreezeStructCopy ("PPU", &local_ppu, SnapPPU, COUNT (SnapPPU))) != SUCCESS)
+		if ((result = UnfreezeStructCopy ((char *)"PPU", &local_ppu, SnapPPU, COUNT (SnapPPU))) != SUCCESS)
 			break;
-		if ((result = UnfreezeStructCopy ("DMA", &local_dma, SnapDMA, COUNT (SnapDMA))) != SUCCESS)
+		if ((result = UnfreezeStructCopy ((char *)"DMA", &local_dma, SnapDMA, COUNT (SnapDMA))) != SUCCESS)
 			break;
-		if ((result = UnfreezeBlockCopy ("VRA", &local_vram, 0x10000)) != SUCCESS)
+		if ((result = UnfreezeBlockCopy ((char *)"VRA", &local_vram, 0x10000)) != SUCCESS)
 			break;
-		if ((result = UnfreezeBlockCopy ("RAM", &local_ram, 0x20000)) != SUCCESS)
+		if ((result = UnfreezeBlockCopy ((char *)"RAM", &local_ram, 0x20000)) != SUCCESS)
 			break;
-		if ((result = UnfreezeBlockCopy ("SRA", &local_sram, 0x20000)) != SUCCESS)
+		if ((result = UnfreezeBlockCopy ((char *)"SRA", &local_sram, 0x20000)) != SUCCESS)
 			break;
-		if ((result = UnfreezeBlockCopy ("FIL", &local_fillram, 0x8000)) != SUCCESS)
+		if ((result = UnfreezeBlockCopy ((char *)"FIL", &local_fillram, 0x8000)) != SUCCESS)
 			break;
-		if (UnfreezeStructCopy ("APU", &local_apu, SnapAPU, COUNT (SnapAPU)) == SUCCESS)
+		if (UnfreezeStructCopy ((char *)"APU", &local_apu, SnapAPU, COUNT (SnapAPU)) == SUCCESS)
 		{
-			if ((result = UnfreezeStructCopy ("ARE", &local_apu_registers, SnapAPURegisters, COUNT (SnapAPURegisters))) != SUCCESS)
+			if ((result = UnfreezeStructCopy ((char *)"ARE", &local_apu_registers, SnapAPURegisters, COUNT (SnapAPURegisters))) != SUCCESS)
 				break;
-			if ((result = UnfreezeBlockCopy ("ARA", &local_apu_ram, 0x10000)) != SUCCESS)
+			if ((result = UnfreezeBlockCopy ((char *)"ARA", &local_apu_ram, 0x10000)) != SUCCESS)
 				break;
-			if ((result = UnfreezeStructCopy ("SOU", &local_apu_sounddata, SnapSoundData, COUNT (SnapSoundData))) != SUCCESS)
+			if ((result = UnfreezeStructCopy ((char *)"SOU", &local_apu_sounddata, SnapSoundData, COUNT (SnapSoundData))) != SUCCESS)
 				break;
 		}
-		if ((result = UnfreezeStructCopy ("SA1", &local_sa1, SnapSA1, COUNT(SnapSA1))) == SUCCESS)
+		if ((result = UnfreezeStructCopy ((char *)"SA1", &local_sa1, SnapSA1, COUNT(SnapSA1))) == SUCCESS)
 		{
-			if ((result = UnfreezeStructCopy ("SAR", &local_sa1_registers, SnapSA1Registers, COUNT (SnapSA1Registers))) != SUCCESS)
+			if ((result = UnfreezeStructCopy ((char *)"SAR", &local_sa1_registers, SnapSA1Registers, COUNT (SnapSA1Registers))) != SUCCESS)
 				break;
 		}
 		
-		if ((result = UnfreezeStructCopy ("SP7", &local_spc, SnapSPC7110, COUNT(SnapSPC7110))) != SUCCESS)
+		if ((result = UnfreezeStructCopy ((char *)"SP7", &local_spc, SnapSPC7110, COUNT(SnapSPC7110))) != SUCCESS)
 		{
 			if(Settings.SPC7110)
 				break;
 		}
-		if ((result = UnfreezeStructCopy ("RTC", &local_spc_rtc, SnapS7RTC, COUNT (SnapS7RTC))) != SUCCESS)
+		if ((result = UnfreezeStructCopy ((char *)"RTC", &local_spc_rtc, SnapS7RTC, COUNT (SnapS7RTC))) != SUCCESS)
 		{
 			if(Settings.SPC7110RTC)
 				break;
@@ -1088,7 +1088,7 @@ int UnfreezeStruct (char *name, void *base, FreezeData *fields,
 	
     if ((result = UnfreezeBlock (name, block, len)) != SUCCESS)
     {
-		delete block;
+                delete[] block;
 		return (result);
     }
 	
