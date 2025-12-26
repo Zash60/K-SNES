@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <dlfcn.h>
 #include <pthread.h>
+#include <cstring>
 
 #define LOG_TAG "libemu"
 #include <utils/Log.h>
