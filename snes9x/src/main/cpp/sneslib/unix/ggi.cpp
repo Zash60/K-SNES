@@ -135,15 +135,15 @@ START_EXTERN_C
 uint8 snes9x_clear_change_log = 0;
 END_EXTERN_C
 
-#define DEFINE_DEST(type, k) static type Buf[k*SNES_WIDTH];register type *d = Buf
+#define DEFINE_DEST(type, k) static type Buf[k*SNES_WIDTH]; type *d = Buf
 static void Convert16to15(void)
 {
-  for (register int y = 0; y < SNES_HEIGHT_EXTENDED; y++) {
+  for ( int y = 0; y < SNES_HEIGHT_EXTENDED; y++) {
     DEFINE_DEST(uint16, 1);
-    register uint16 *s = (uint16 *) (GFX.Screen + y * GFX.RealPitch);
+     uint16 *s = (uint16 *) (GFX.Screen + y * GFX.RealPitch);
     
-    for (register int x = 0; x < SNES_WIDTH; x++) {
-      register uint16 pixel = *s++;
+    for ( int x = 0; x < SNES_WIDTH; x++) {
+       uint16 pixel = *s++;
       
       *d++ = (((pixel/RED_LOW_BIT_MASK  ) & MAX_RED  ) * (0x20/(MAX_RED  +1)))
            | (((pixel/GREEN_LOW_BIT_MASK) & MAX_GREEN) * (0x400/(MAX_GREEN+1)))
@@ -154,23 +154,23 @@ static void Convert16to15(void)
 }
 static void Convert16to16(void)
 {
-  for (register int y = 0; y < SNES_HEIGHT_EXTENDED; y++) {
+  for ( int y = 0; y < SNES_HEIGHT_EXTENDED; y++) {
     DEFINE_DEST(uint16, 1);
-    register uint16 *s = (uint16 *) (GFX.Screen + y * GFX.RealPitch);
+     uint16 *s = (uint16 *) (GFX.Screen + y * GFX.RealPitch);
     
-    for (register int x = 0; x < SNES_WIDTH; x++)
+    for ( int x = 0; x < SNES_WIDTH; x++)
       *d++ = *s++;
     ggiPutHLine(vis, 0,y, SNES_WIDTH, Buf);
   }
 }
 static void Convert16to24(void)
 {
-  for (register int y = 0; y < SNES_HEIGHT_EXTENDED; y++) {
+  for ( int y = 0; y < SNES_HEIGHT_EXTENDED; y++) {
     DEFINE_DEST(uint8, 3);
-    register uint16 *s = (uint16 *) (GFX.Screen + y * GFX.RealPitch);
+     uint16 *s = (uint16 *) (GFX.Screen + y * GFX.RealPitch);
     
-    for (register int x = 0; x < SNES_WIDTH; x++) {
-      register uint16 pixel = *s++;
+    for ( int x = 0; x < SNES_WIDTH; x++) {
+       uint16 pixel = *s++;
       #if 0
       *d++ = (pixel & 0x1F) << 3;
       *d++ = ((pixel >> 5) & 0x3f) << 2;
@@ -186,12 +186,12 @@ static void Convert16to24(void)
 }
 static void Convert16to32(void)
 {
-  for (register int y = 0; y < SNES_HEIGHT_EXTENDED; y++) {
+  for ( int y = 0; y < SNES_HEIGHT_EXTENDED; y++) {
     DEFINE_DEST(uint32, 1);
-    register uint16 *s = (uint16 *) (GFX.Screen + y * GFX.RealPitch);
+     uint16 *s = (uint16 *) (GFX.Screen + y * GFX.RealPitch);
     
-    for (register int x = 0; x < SNES_WIDTH; x++) {
-      register uint16 pixel = *s++;
+    for ( int x = 0; x < SNES_WIDTH; x++) {
+       uint16 pixel = *s++;
       #if 0
       *d++ = ((pixel & 0x1f) << 3)
            | ((((pixel >> 5) & 0x3f) << 2) << 8)
@@ -218,7 +218,7 @@ static void Convert16to32(void)
 }
 static void Convert8to8(void)
 {
-  for (register int y = 0; y < SNES_HEIGHT_EXTENDED; y++)
+  for ( int y = 0; y < SNES_HEIGHT_EXTENDED; y++)
   {
     ggiPutHLine(vis, 0,y, SNES_WIDTH, (GFX.Screen + y * GFX.RealPitch));
   }

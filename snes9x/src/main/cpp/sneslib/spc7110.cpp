@@ -565,17 +565,17 @@ uint8 S9xGetSPC7110(uint16 Address)
 #endif
 		}
 		return s7r.reg4800;
-	//table register low
+	//table  low
 	case 0x4801: return s7r.reg4801;
-	//table register middle
+	//table  middle
 	case 0x4802: return s7r.reg4802;
-	//table register high
+	//table  high
 	case 0x4803: return s7r.reg4803;
 	//index of pointer in table (each entry is 4 bytes)
 	case 0x4804: return s7r.reg4804;
-	//offset register low
+	//offset  low
 	case 0x4805: return s7r.reg4805;
-	//offset register high
+	//offset  high
 	case 0x4806: return s7r.reg4806;
 	//DMA channel (not that I see this usually set,
 	//regardless of what channel DMA is on)
@@ -961,7 +961,7 @@ void S9xSetSPC7110 (uint8 data, uint16 Address)
 		s7r.reg480C&=0x7F;
 		break;
 
-	//DMA channel register (Is it used??)
+	//DMA channel  (Is it used??)
 	case 0x4807:
 		s7r.reg4807=data;
 		break;
@@ -1298,7 +1298,7 @@ void S9xSetSPC7110 (uint8 data, uint16 Address)
 		s7r.reg482E=data;
 		break;
 
-	//math status register possibly read only
+	//math status  possibly read only
 
 	//SRAM toggle
 	case 0x4830:
@@ -1338,7 +1338,7 @@ void S9xSetSPC7110 (uint8 data, uint16 Address)
 		}
 		s7r.reg4840=data;
 		break;
-	//RTC init/command/index register
+	//RTC init/command/index 
 	case 0x4841:
 		if(rtc_f9.init)
 		{
@@ -1419,7 +1419,7 @@ void S9xSetSPC7110 (uint8 data, uint16 Address)
 			}
 		}
 		break;
-	//writes to RTC status register aren't expected to be meaningful
+	//writes to RTC status  aren't expected to be meaningful
 	default:
 		Address-=0x4800;
 		break;

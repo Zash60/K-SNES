@@ -266,7 +266,7 @@ static void fx_readRegisterSpace()
     GSU.vCacheBaseReg = (uint32)p[GSU_CBR];
     GSU.vCacheBaseReg |= ((uint32)p[GSU_CBR+1]) << 8;
 
-    /* Update status register variables */
+    /* Update status  variables */
     GSU.vZero = !(GSU.vStatusReg & FLG_Z);
     GSU.vSign = (GSU.vStatusReg & FLG_S) << 12;
     GSU.vOverflow = (GSU.vStatusReg & FLG_OV) << 16;
@@ -298,7 +298,7 @@ static void fx_readRegisterSpace()
     }
 #if 0
     if(GSU.pvScreenBase + GSU.vScreenSize > GSU.pvRam + (GSU.nRamBanks * 65536))
-	error illegal address for screen base register
+	error illegal address for screen base 
 #else
     if(GSU.pvScreenBase + GSU.vScreenSize > GSU.pvRam + (GSU.nRamBanks * 65536))
 	GSU.pvScreenBase =  GSU.pvRam + (GSU.nRamBanks * 65536) - GSU.vScreenSize;
@@ -463,7 +463,7 @@ static void fx_writeRegisterSpace()
 	*p++ = (uint8)(GSU.avReg[i] >> 8);
     }
 
-    /* Update status register */
+    /* Update status  */
     if( USEX16(GSU.vZero) == 0 ) SF(Z);
     else CF(Z);
     if( GSU.vSign & 0x8000 ) SF(S);
@@ -538,7 +538,7 @@ void FxReset(struct FxInit_s *psFxInfo)
     if(GSU.nRomBanks > 0x20)
 	GSU.nRomBanks = 0x20;
     
-    /* Clear FxChip register space */
+    /* Clear FxChip  space */
     memset(GSU.pvRegisters,0,0x300);
 
     /* Set FxChip version Number */

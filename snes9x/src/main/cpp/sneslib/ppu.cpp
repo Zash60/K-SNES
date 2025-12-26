@@ -279,7 +279,7 @@ void S9xSetPPU (uint8 Byte, uint16 Address)
 			break;
 
 		  case 0x2103:
-			// Sprite register write address (high), sprite priority rotation
+			// Sprite  write address (high), sprite priority rotation
 			// bit.
 			PPU.OAMAddr = ((Byte&1)<<8) | Memory.FillRAM[0x2102];
 
@@ -310,7 +310,7 @@ void S9xSetPPU (uint8 Byte, uint16 Address)
 			break;
 
 		  case 0x2104:
-			// Sprite register write
+			// Sprite  write
 			REGISTER_2104(Byte);
 			break;
 
@@ -975,7 +975,7 @@ void S9xSetPPU (uint8 Byte, uint16 Address)
 					missing.unknownppu_write = Address;
 					if (Settings.TraceUnknownRegisters)
 					{
-						sprintf (String, "Unknown register write: $%02X->$%04X\n",
+						sprintf (String, "Unknown  write: $%02X->$%04X\n",
 								 Byte, Address);
 						S9xMessage (S9X_TRACE, S9X_PPU_TRACE, String);
 					}
@@ -1494,7 +1494,7 @@ uint8 S9xGetPPU (uint16 Address)
 	        missing.unknownppu_read = Address;
 	        if (Settings.TraceUnknownRegisters)
 		{
-		    sprintf (String, "Unknown register read: $%04X\n", Address);
+		    sprintf (String, "Unknown  read: $%04X\n", Address);
 		    S9xMessage (S9X_TRACE, S9X_PPU_TRACE, String);
 		}
 #endif
@@ -1570,7 +1570,7 @@ void S9xSetCPU (uint8 byte, uint16 Address)
 			missing.unknowncpu_write = Address;
 			if (Settings.TraceUnknownRegisters)
 			{
-				sprintf (String, "Unknown register register write: $%02X->$%04X\n",
+				sprintf (String, "Unknown   write: $%02X->$%04X\n",
 						 byte, Address);
 				S9xMessage (S9X_TRACE, S9X_PPU_TRACE, String);
 			}
@@ -2061,7 +2061,7 @@ void S9xSetCPU (uint8 byte, uint16 Address)
 			missing.unknowncpu_write = Address;
 			if (Settings.TraceUnknownRegisters)
 			{
-				sprintf (String, "Unknown register write: $%02X->$%04X\n",
+				sprintf (String, "Unknown  write: $%02X->$%04X\n",
 						 byte, Address);
 				S9xMessage (S9X_TRACE, S9X_PPU_TRACE, String);
 			}
@@ -2161,7 +2161,7 @@ uint8 S9xGetCPU (uint16 Address)
 			missing.unknowncpu_read = Address;
 			if (Settings.TraceUnknownRegisters)
 			{
-				sprintf (String, "Unknown register read: $%04X\n", Address);
+				sprintf (String, "Unknown  read: $%04X\n", Address);
 				S9xMessage (S9X_TRACE, S9X_PPU_TRACE, String);
 			}
 #endif
@@ -2387,7 +2387,7 @@ uint8 S9xGetCPU (uint16 Address)
 	missing.unknowncpu_read = Address;
 	if (Settings.TraceUnknownRegisters)
 	{
-	    sprintf (String, "Unknown register read: $%04X\n", Address);
+	    sprintf (String, "Unknown  read: $%04X\n", Address);
 	    S9xMessage (S9X_TRACE, S9X_PPU_TRACE, String);
 	}
 	    

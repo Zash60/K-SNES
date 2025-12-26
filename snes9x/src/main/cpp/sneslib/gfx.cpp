@@ -265,8 +265,8 @@ void DrawLargePixel16Sub1_2 (uint32 Tile, uint32 Offset,
 
 bool8 S9xGraphicsInit ()
 {
-    register uint32 PixelOdd = 1;
-    register uint32 PixelEven = 2;
+     uint32 PixelOdd = 1;
+     uint32 PixelEven = 2;
 
 #ifdef GFX_MULTI_FORMAT
     if (GFX.BuildPixel == NULL)
@@ -275,10 +275,10 @@ bool8 S9xGraphicsInit ()
 
     for (uint8 bitshift = 0; bitshift < 4; bitshift++)
     {
-	for (register int i = 0; i < 16; i++)
+	for ( int i = 0; i < 16; i++)
 	{
-	    register uint32 h = 0;
-	    register uint32 l = 0;
+	     uint32 h = 0;
+	     uint32 l = 0;
 
 #if defined(LSB_FIRST)
 	    if (i & 8)
@@ -3137,11 +3137,11 @@ void DrawBGMode7Background16Sub1_2 (uint8 *Screen, int bg)
 
 STATIC uint32 Q_INTERPOLATE(uint32 A, uint32 B, uint32 C, uint32 D)
 {
-    register uint32 x = ((A >> 2) & HIGH_BITS_SHIFTED_TWO_MASK) +
+     uint32 x = ((A >> 2) & HIGH_BITS_SHIFTED_TWO_MASK) +
                             ((B >> 2) & HIGH_BITS_SHIFTED_TWO_MASK) +
                             ((C >> 2) & HIGH_BITS_SHIFTED_TWO_MASK) +
                             ((D >> 2) & HIGH_BITS_SHIFTED_TWO_MASK);
-    register uint32 y = (A & TWO_LOW_BITS_MASK) +
+     uint32 y = (A & TWO_LOW_BITS_MASK) +
                             (B & TWO_LOW_BITS_MASK) +
                             (C & TWO_LOW_BITS_MASK) +
                             (D & TWO_LOW_BITS_MASK);
@@ -3569,11 +3569,11 @@ void S9xUpdateScreen ()
 					// Have to back out of the speed up hack where the low res.
 					// SNES image was rendered into a 256x239 sized buffer,
 					// ignoring the true, larger size of the buffer.
-					for (register int32 y = (int32) starty - 1; y >= 0; y--)
+					for ( int32 y = (int32) starty - 1; y >= 0; y--)
 					{
-						register uint16 *p = (uint16 *) (GFX.Screen + y * GFX.Pitch2) + 255;
-						register uint16 *q = (uint16 *) (GFX.Screen + y * GFX.RealPitch) + 510;
-						for (register int x = 255; x >= 0; x--, p--, q -= 2)
+						 uint16 *p = (uint16 *) (GFX.Screen + y * GFX.Pitch2) + 255;
+						 uint16 *q = (uint16 *) (GFX.Screen + y * GFX.RealPitch) + 510;
+						for ( int x = 255; x >= 0; x--, p--, q -= 2)
 							*q = *(q + 1) = *p;
 					}
 					
@@ -3584,22 +3584,22 @@ void S9xUpdateScreen ()
 				}
 				else
 #endif
-					for (register uint32 y = 0; y < starty; y++)
+					for ( uint32 y = 0; y < starty; y++)
 					{
-						register uint16 *p = (uint16 *) (GFX.Screen + y * GFX.Pitch2) + 255;
-						register uint16 *q = (uint16 *) (GFX.Screen + y * GFX.Pitch2) + 510;
+						 uint16 *p = (uint16 *) (GFX.Screen + y * GFX.Pitch2) + 255;
+						 uint16 *q = (uint16 *) (GFX.Screen + y * GFX.Pitch2) + 510;
 						
-						for (register int x = 255; x >= 0; x--, p--, q -= 2)
+						for ( int x = 255; x >= 0; x--, p--, q -= 2)
 							*q = *(q + 1) = *p;
 					}
 			}
 			else
 			{
-				for (register uint32 y = 0; y < starty; y++)
+				for ( uint32 y = 0; y < starty; y++)
 				{
-					register uint8 *p = GFX.Screen + y * GFX.Pitch2 + 255;
-					register uint8 *q = GFX.Screen + y * GFX.Pitch2 + 510;
-					for (register int x = 255; x >= 0; x--, p--, q -= 2)
+					 uint8 *p = GFX.Screen + y * GFX.Pitch2 + 255;
+					 uint8 *q = GFX.Screen + y * GFX.Pitch2 + 510;
+					for ( int x = 255; x >= 0; x--, p--, q -= 2)
 						*q = *(q + 1) = *p;
 				}
 			}
@@ -3622,7 +3622,7 @@ void S9xUpdateScreen ()
 			
             // The game has switched from non-interlaced to interlaced mode
             // part way down the screen. Scale everything.
-            for (register int32 y = (int32) GFX.StartY - 1; y >= 0; y--)
+            for ( int32 y = (int32) GFX.StartY - 1; y >= 0; y--)
 			{
 				memmove (GFX.Screen + y * 2 * GFX.Pitch2,
 					GFX.Screen + y * GFX.Pitch2,
@@ -3737,9 +3737,9 @@ void S9xUpdateScreen ()
 			{
 				for (uint32 y = starty; y <= endy; y++)
 				{
-					register uint16 *p = (uint16 *) (GFX.Screen + y * GFX.Pitch2);
-					register uint8 *d = GFX.SubZBuffer + y * GFX.ZPitch;
-					register uint8 *e = d + IPPU.RenderedScreenWidth;
+					 uint16 *p = (uint16 *) (GFX.Screen + y * GFX.Pitch2);
+					 uint8 *d = GFX.SubZBuffer + y * GFX.ZPitch;
+					 uint8 *e = d + IPPU.RenderedScreenWidth;
 					
 					while (d < e)
 					{
@@ -3788,10 +3788,10 @@ void S9xUpdateScreen ()
 							if (GFX.r2131 & 0x40)
 							{
 								// Subtract, halving the result.
-								register uint16 *p = (uint16 *) (GFX.Screen + y * GFX.Pitch2) + Left;
-								register uint8 *d = GFX.ZBuffer + y * GFX.ZPitch;
-								register uint8 *s = GFX.SubZBuffer + y * GFX.ZPitch + Left;
-								register uint8 *e = d + Right;
+								 uint16 *p = (uint16 *) (GFX.Screen + y * GFX.Pitch2) + Left;
+								 uint8 *d = GFX.ZBuffer + y * GFX.ZPitch;
+								 uint8 *s = GFX.SubZBuffer + y * GFX.ZPitch + Left;
+								 uint8 *e = d + Right;
 								uint16 back_fixed = COLOR_SUB (back, GFX.FixedColour);
 								
 								d += Left;
@@ -3817,10 +3817,10 @@ void S9xUpdateScreen ()
 							else
 							{
 								// Subtract
-								register uint16 *p = (uint16 *) (GFX.Screen + y * GFX.Pitch2) + Left;
-								register uint8 *s = GFX.SubZBuffer + y * GFX.ZPitch + Left;
-								register uint8 *d = GFX.ZBuffer + y * GFX.ZPitch;
-								register uint8 *e = d + Right;
+								 uint16 *p = (uint16 *) (GFX.Screen + y * GFX.Pitch2) + Left;
+								 uint8 *s = GFX.SubZBuffer + y * GFX.ZPitch + Left;
+								 uint8 *d = GFX.ZBuffer + y * GFX.ZPitch;
+								 uint8 *e = d + Right;
 								uint16 back_fixed = COLOR_SUB (back, GFX.FixedColour);
 								
 								d += Left;
@@ -3847,10 +3847,10 @@ void S9xUpdateScreen ()
 						else
 							if (GFX.r2131 & 0x40)
 							{
-								register uint16 *p = (uint16 *) (GFX.Screen + y * GFX.Pitch2) + Left;
-								register uint8 *d = GFX.ZBuffer + y * GFX.ZPitch;
-								register uint8 *s = GFX.SubZBuffer + y * GFX.ZPitch + Left;
-								register uint8 *e = d + Right;
+								 uint16 *p = (uint16 *) (GFX.Screen + y * GFX.Pitch2) + Left;
+								 uint8 *d = GFX.ZBuffer + y * GFX.ZPitch;
+								 uint8 *s = GFX.SubZBuffer + y * GFX.ZPitch + Left;
+								 uint8 *e = d + Right;
 								uint16 back_fixed = COLOR_ADD (back, GFX.FixedColour);
 								d += Left;
 								while (d < e)
@@ -3875,10 +3875,10 @@ void S9xUpdateScreen ()
 							else
 								if (back != 0)
 								{
-									register uint16 *p = (uint16 *) (GFX.Screen + y * GFX.Pitch2) + Left;
-									register uint8 *d = GFX.ZBuffer + y * GFX.ZPitch;
-									register uint8 *s = GFX.SubZBuffer + y * GFX.ZPitch + Left;
-									register uint8 *e = d + Right;
+									 uint16 *p = (uint16 *) (GFX.Screen + y * GFX.Pitch2) + Left;
+									 uint8 *d = GFX.ZBuffer + y * GFX.ZPitch;
+									 uint8 *s = GFX.SubZBuffer + y * GFX.ZPitch + Left;
+									 uint8 *e = d + Right;
 									uint16 back_fixed = COLOR_ADD (back, GFX.FixedColour);
 									d += Left;
 									while (d < e)
@@ -3908,10 +3908,10 @@ void S9xUpdateScreen ()
 										// copy the sub-screen to the main screen
 										// or fill it with the back-drop colour if the
 										// sub-screen is clear.
-										register uint16 *p = (uint16 *) (GFX.Screen + y * GFX.Pitch2) + Left;
-										register uint8 *d = GFX.ZBuffer + y * GFX.ZPitch;
-										register uint8 *s = GFX.SubZBuffer + y * GFX.ZPitch + Left;
-										register uint8 *e = d + Right;
+										 uint16 *p = (uint16 *) (GFX.Screen + y * GFX.Pitch2) + Left;
+										 uint8 *d = GFX.ZBuffer + y * GFX.ZPitch;
+										 uint8 *s = GFX.SubZBuffer + y * GFX.ZPitch + Left;
+										 uint8 *e = d + Right;
 										d += Left;
 										while (d < e)
 										{
@@ -4193,21 +4193,21 @@ void S9xUpdateScreen ()
 			// of all non-mode 5 and 6 pixels.
 			if (Settings.SixteenBit)
 			{
-				for (register uint32 y = starty; y <= endy; y++)
+				for ( uint32 y = starty; y <= endy; y++)
 				{
-					register uint16 *p = (uint16 *) (GFX.Screen + y * GFX.Pitch2) + 255;
-					register uint16 *q = (uint16 *) (GFX.Screen + y * GFX.Pitch2) + 510;
-					for (register int x = 255; x >= 0; x--, p--, q -= 2)
+					 uint16 *p = (uint16 *) (GFX.Screen + y * GFX.Pitch2) + 255;
+					 uint16 *q = (uint16 *) (GFX.Screen + y * GFX.Pitch2) + 510;
+					for ( int x = 255; x >= 0; x--, p--, q -= 2)
 						*q = *(q + 1) = *p;
 				}
 			}
 			else
 			{
-				for (register uint32 y = starty; y <= endy; y++)
+				for ( uint32 y = starty; y <= endy; y++)
 				{
-					register uint8 *p = GFX.Screen + y * GFX.Pitch2 + 255;
-					register uint8 *q = GFX.Screen + y * GFX.Pitch2 + 510;
-					for (register int x = 255; x >= 0; x--, p--, q -= 2)
+					 uint8 *p = GFX.Screen + y * GFX.Pitch2 + 255;
+					 uint8 *q = GFX.Screen + y * GFX.Pitch2 + 510;
+					for ( int x = 255; x >= 0; x--, p--, q -= 2)
 						*q = *(q + 1) = *p;
 				}
 			}

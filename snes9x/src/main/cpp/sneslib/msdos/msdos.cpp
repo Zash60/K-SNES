@@ -1075,7 +1075,7 @@ void outReg(Register r)
 
 /*
     readyVgaRegs() does the initialization to make the VGA ready to
-    accept any combination of configuration register settings.
+    accept any combination of configuration  settings.
 
     This involves enabling writes to index 0 to 7 of the CRT controller
     (port 0x3d4), by clearing the most significant bit (bit 7) of index

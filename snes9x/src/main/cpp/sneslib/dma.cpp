@@ -474,7 +474,7 @@ void S9xDoDMA (uint8 Channel)
 		 * XXX: GetBasePointer whenever we cross a boundry, and when
 		 * XXX: GetBasePointer returns (0) to take the 'slow path' and use
 		 * XXX: S9xGetByte instead of *base. GetBasePointer() would want to
-		 * XXX: return (0) for MAP_PPU and whatever else is a register range
+		 * XXX: return (0) for MAP_PPU and whatever else is a  range
 		 * XXX: rather than a RAM/ROM block, and we'd want to detect MAP_PPU
 		 * XXX: (or specifically, Address Bus B addresses $2100-$21FF in
 		 * XXX: banks $00-$3F) specially and treat it as MAP_NONE (since
@@ -961,7 +961,7 @@ uint8 S9xDoHDMA (uint8 byte)
 					p->LineCount = line & 0x7f;
 				}
 
-				// Disable H-DMA'ing into V-RAM (register 2118) for Hook
+				// Disable H-DMA'ing into V-RAM ( 2118) for Hook
 				/* XXX: instead of p->BAddress == 0x18, make S9xSetPPU fail
 				 * XXX: writes to $2118/9 when appropriate
 				 */

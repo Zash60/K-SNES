@@ -390,7 +390,7 @@ void S9xPrintAPUState ()
     printf ("\n");
     for (int J = 0; J < 8; J++)
     {
-	register Channel *ch = &SoundData.channels[J];
+	 Channel *ch = &SoundData.channels[J];
 
 	printf ("%d: ", J);
 	if (ch->state == SOUND_SILENT)

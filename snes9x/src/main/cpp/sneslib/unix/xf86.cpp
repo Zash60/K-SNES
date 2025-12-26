@@ -437,7 +437,7 @@ void S9xSetPalette ()
 
 void S9xPutImage (int width, int height)
 {
-	register int x,y;
+	 int x,y;
 	
 
 	switch (ourvideo.bitdepth) {

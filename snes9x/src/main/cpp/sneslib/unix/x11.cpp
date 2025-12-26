@@ -2250,8 +2250,8 @@ const char *S9xSelectFilename (const char *def, const char *dir1,
 
 void Scale8 (int width, int height)
 {
-    register uint32 x_error;
-    register uint32 x_fraction;
+     uint32 x_error;
+     uint32 x_fraction;
     uint32 y_error = 0;
     uint32 y_fraction;
     int yy = height - 1;
@@ -2261,9 +2261,9 @@ void Scale8 (int width, int height)
     
     for (int y = GUI.window_height - 1; y >= 0; y--)
     {
-	register uint8 *d = (uint8 *) GUI.image_date + y * GUI.bytes_per_line +
+	 uint8 *d = (uint8 *) GUI.image_date + y * GUI.bytes_per_line +
 			   GUI.window_width - 1;
-	register uint8 *s = GUI.output_screen + yy * GUI.output_pitch + width - 1;
+	 uint8 *s = GUI.output_screen + yy * GUI.output_pitch + width - 1;
 	y_error += y_fraction;
 	while (y_error >= 0x10000)
 	{
@@ -2271,7 +2271,7 @@ void Scale8 (int width, int height)
 	    y_error -= 0x10000;
 	}
 	x_error = 0;
-	for (register int x = GUI.window_width - 1; x >= 0; x--)
+	for ( int x = GUI.window_width - 1; x >= 0; x--)
 	{
 	    *d-- = *s;
 	    x_error += x_fraction;
@@ -2287,8 +2287,8 @@ void Scale8 (int width, int height)
 
 void Scale16 (int width, int height)
 {
-    register uint32 x_error;
-    register uint32 x_fraction;
+     uint32 x_error;
+     uint32 x_fraction;
     uint32 y_error = 0;
     uint32 y_fraction;
     int yy = height - 1;
@@ -2298,9 +2298,9 @@ void Scale16 (int width, int height)
     
     for (int y = GUI.window_height - 1; y >= 0; y--)
     {
-	register uint16 *d = (uint16 *) (GUI.image_date + y * GUI.bytes_per_line) +
+	 uint16 *d = (uint16 *) (GUI.image_date + y * GUI.bytes_per_line) +
 					 GUI.window_width - 1;
-	register uint16 *s = (uint16 *) (GUI.output_screen + yy * GUI.output_pitch) + width - 1;
+	 uint16 *s = (uint16 *) (GUI.output_screen + yy * GUI.output_pitch) + width - 1;
 	y_error += y_fraction;
 	while (y_error >= 0x10000)
 	{
@@ -2308,7 +2308,7 @@ void Scale16 (int width, int height)
 	    y_error -= 0x10000;
 	}
 	x_error = 0;
-	for (register int x = GUI.window_width - 1; x >= 0; x--)
+	for ( int x = GUI.window_width - 1; x >= 0; x--)
 	{
 	    *d-- = *s;
 	    x_error += x_fraction;
@@ -2329,13 +2329,13 @@ void Convert8To24 (int width, int height)
     if (!GUI.image_needs_scaling)
     {
 	// Convert
-	for (register int y = 0; y < height; y++)
+	for ( int y = 0; y < height; y++)
 	{
-	    register uint32 *d = (uint32 *) (GUI.image_date +
+	     uint32 *d = (uint32 *) (GUI.image_date +
 					     y * GUI.bytes_per_line);
-	    register uint8 *s = GUI.output_screen + y * GUI.output_pitch;
+	     uint8 *s = GUI.output_screen + y * GUI.output_pitch;
 
-	    for (register int x = 0; x < width; x++)
+	    for ( int x = 0; x < width; x++)
 	    {
 		uint32 pixel = PPU.CGDATA [*s++];
 		*d++ = (((pixel & 0x1f) * brightness) << GUI.red_shift) |
@@ -2347,8 +2347,8 @@ void Convert8To24 (int width, int height)
     else
     {
 	// Scale and convert
-	register uint32 x_error;
-	register uint32 x_fraction;
+	 uint32 x_error;
+	 uint32 x_fraction;
 	uint32 y_error = 0;
 	uint32 y_fraction;
 	int yy = 0;
@@ -2358,9 +2358,9 @@ void Convert8To24 (int width, int height)
 	
 	for (int y = 0; y < GUI.window_height; y++)
 	{
-	    register uint32 *d = (uint32 *) (GUI.image_date +
+	     uint32 *d = (uint32 *) (GUI.image_date +
 					   y * GUI.bytes_per_line);
-	    register uint8 *s = GUI.output_screen + yy * GUI.output_pitch;
+	     uint8 *s = GUI.output_screen + yy * GUI.output_pitch;
 	    y_error += y_fraction;
 	    while (y_error >= 0x10000)
 	    {
@@ -2368,7 +2368,7 @@ void Convert8To24 (int width, int height)
 		y_error -= 0x10000;
 	    }
 	    x_error = 0;
-	    for (register int x = 0; x < GUI.window_width; x++)
+	    for ( int x = 0; x < GUI.window_width; x++)
 	    {
 		uint32 pixel = PPU.CGDATA [*s];
 		*d++ = (((pixel & 0x1f) * brightness) << GUI.red_shift) |
@@ -2391,13 +2391,13 @@ void Convert16To24 (int width, int height)
     if (!GUI.image_needs_scaling)
     {
 	// Convert
-	for (register int y = 0; y < height; y++)
+	for ( int y = 0; y < height; y++)
 	{
-	    register uint32 *d = (uint32 *) (GUI.image_date +
+	     uint32 *d = (uint32 *) (GUI.image_date +
 					     y * GUI.bytes_per_line);
-	    register uint16 *s = (uint16 *) (GUI.output_screen + y * GUI.output_pitch);
+	     uint16 *s = (uint16 *) (GUI.output_screen + y * GUI.output_pitch);
 
-	    for (register int x = 0; x < width; x++)
+	    for ( int x = 0; x < width; x++)
 	    {
 		uint32 pixel = *s++;
 		*d++ = (((pixel >> 11) & 0x1f) << (GUI.red_shift + 3)) |
@@ -2409,8 +2409,8 @@ void Convert16To24 (int width, int height)
     else
     {
 	// Scale and convert
-	register uint32 x_error;
-	register uint32 x_fraction;
+	 uint32 x_error;
+	 uint32 x_fraction;
 	uint32 y_error = 0;
 	uint32 y_fraction;
 	int yy = 0;
@@ -2420,9 +2420,9 @@ void Convert16To24 (int width, int height)
 	
 	for (int y = 0; y < GUI.window_height; y++)
 	{
-	    register uint32 *d = (uint32 *) (GUI.image_date +
+	     uint32 *d = (uint32 *) (GUI.image_date +
 					     y * GUI.bytes_per_line);
-	    register uint16 *s = (uint16 *) (GUI.output_screen + yy * GUI.output_pitch);
+	     uint16 *s = (uint16 *) (GUI.output_screen + yy * GUI.output_pitch);
 	    y_error += y_fraction;
 	    while (y_error >= 0x10000)
 	    {
@@ -2430,7 +2430,7 @@ void Convert16To24 (int width, int height)
 		y_error -= 0x10000;
 	    }
 	    x_error = 0;
-	    for (register int x = 0; x < GUI.window_width; x++)
+	    for ( int x = 0; x < GUI.window_width; x++)
 	    {
 		uint32 pixel = *s;
 		*d++ = (((pixel >> 11) & 0x1f) << (GUI.red_shift + 3)) |
@@ -2459,10 +2459,10 @@ void Convert8To24Packed (int width, int height)
     if (!GUI.image_needs_scaling)
     {
 	// Convert
-	for (register int y = 0; y < height; y++)
+	for ( int y = 0; y < height; y++)
 	{
-	    register uint8 *d = (uint8 *) (GUI.image_date + y * GUI.bytes_per_line);
-	    register uint8 *s = GUI.output_screen + y * GUI.output_pitch;
+	     uint8 *d = (uint8 *) (GUI.image_date + y * GUI.bytes_per_line);
+	     uint8 *s = GUI.output_screen + y * GUI.output_pitch;
 
 #ifdef LSB_FIRST
 	    if (GUI.red_shift < GUI.blue_shift)
@@ -2471,7 +2471,7 @@ void Convert8To24Packed (int width, int height)
 #endif
 	    {
 		// Order is RGB
-		for (register int x = 0; x < width; x++)
+		for ( int x = 0; x < width; x++)
 		{
 		    uint16 pixel = PPU.CGDATA [*s++];
 		    *d++ = levels [(pixel & 0x1f)];
@@ -2482,7 +2482,7 @@ void Convert8To24Packed (int width, int height)
 	    else
 	    {
 		// Order is BGR
-		for (register int x = 0; x < width; x++)
+		for ( int x = 0; x < width; x++)
 		{
 		    uint16 pixel = PPU.CGDATA [*s++];
 		    *d++ = levels [((pixel >> 10) & 0x1f)];
@@ -2495,8 +2495,8 @@ void Convert8To24Packed (int width, int height)
     else
     {
 	// Scale and convert
-	register uint32 x_error;
-	register uint32 x_fraction;
+	 uint32 x_error;
+	 uint32 x_fraction;
 	uint32 y_error = 0;
 	uint32 y_fraction;
 	int yy = 0;
@@ -2506,9 +2506,9 @@ void Convert8To24Packed (int width, int height)
 	
 	for (int y = 0; y < GUI.window_height; y++)
 	{
-	    register uint8 *d = (uint8 *) (GUI.image_date +
+	     uint8 *d = (uint8 *) (GUI.image_date +
 					 y * GUI.bytes_per_line);
-	    register uint8 *s = GUI.output_screen + yy * GUI.output_pitch;
+	     uint8 *s = GUI.output_screen + yy * GUI.output_pitch;
 	    y_error += y_fraction;
 	    while (y_error >= 0x10000)
 	    {
@@ -2523,7 +2523,7 @@ void Convert8To24Packed (int width, int height)
 #endif
 	    {
 		// Order is RGB
-		for (register int x = 0; x < GUI.window_width; x++)
+		for ( int x = 0; x < GUI.window_width; x++)
 		{
 		    uint16 pixel = PPU.CGDATA [*s];
 		    *d++ = levels [(pixel & 0x1f)];
@@ -2541,7 +2541,7 @@ void Convert8To24Packed (int width, int height)
 	    else
 	    {
 		// Order is BGR
-		for (register int x = 0; x < GUI.window_width; x++)
+		for ( int x = 0; x < GUI.window_width; x++)
 		{
 		    uint16 pixel = PPU.CGDATA [*s];
 		    *d++ = levels [((pixel >> 10) & 0x1f)];
@@ -2565,11 +2565,11 @@ void Convert16To24Packed (int width, int height)
     if (!GUI.image_needs_scaling)
     {
 	// Convert
-	for (register int y = 0; y < height; y++)
+	for ( int y = 0; y < height; y++)
 	{
-	    register uint8 *d = (uint8 *) (GUI.image_date +
+	     uint8 *d = (uint8 *) (GUI.image_date +
 					 y * GUI.bytes_per_line);
-	    register uint16 *s = (uint16 *) (GUI.output_screen + y * GUI.output_pitch);
+	     uint16 *s = (uint16 *) (GUI.output_screen + y * GUI.output_pitch);
 
 #ifdef LSB_FIRST
 	    if (GUI.red_shift < GUI.blue_shift)
@@ -2578,7 +2578,7 @@ void Convert16To24Packed (int width, int height)
 #endif
 	    {
 		// Order is RGB
-		for (register int x = 0; x < width; x++)
+		for ( int x = 0; x < width; x++)
 		{
 		    uint32 pixel = *s++;
 		    *d++ = (pixel >> (11 - 3)) & 0xf8;
@@ -2589,7 +2589,7 @@ void Convert16To24Packed (int width, int height)
 	    else
 	    {
 		// Order is BGR
-		for (register int x = 0; x < width; x++)
+		for ( int x = 0; x < width; x++)
 		{
 		    uint32 pixel = *s++;
 		    *d++ = (pixel & 0x1f) << 3;
@@ -2602,8 +2602,8 @@ void Convert16To24Packed (int width, int height)
     else
     {
 	// Scale and convert
-	register uint32 x_error;
-	register uint32 x_fraction;
+	 uint32 x_error;
+	 uint32 x_fraction;
 	uint32 y_error = 0;
 	uint32 y_fraction;
 	int yy = 0;
@@ -2613,9 +2613,9 @@ void Convert16To24Packed (int width, int height)
 	
 	for (int y = 0; y < GUI.window_height; y++)
 	{
-	    register uint8 *d = (uint8 *) (GUI.image_date +
+	     uint8 *d = (uint8 *) (GUI.image_date +
 					 y * GUI.bytes_per_line);
-	    register uint16 *s = (uint16 *) (GUI.output_screen + yy * GUI.output_pitch);
+	     uint16 *s = (uint16 *) (GUI.output_screen + yy * GUI.output_pitch);
 	    y_error += y_fraction;
 	    while (y_error >= 0x10000)
 	    {
@@ -2630,7 +2630,7 @@ void Convert16To24Packed (int width, int height)
 #endif
 	    {
 		// Order is RGB
-		for (register int x = 0; x < GUI.window_width; x++)
+		for ( int x = 0; x < GUI.window_width; x++)
 		{
 		    uint32 pixel = *s;
 		    *d++ = (pixel >> (11 - 3)) & 0xf8;
@@ -2648,7 +2648,7 @@ void Convert16To24Packed (int width, int height)
 	    else
 	    {
 		// Order is BGR
-		for (register int x = 0; x < GUI.window_width; x++)
+		for ( int x = 0; x < GUI.window_width; x++)
 		{
 		    uint32 pixel = *s;
 		    *d++ = (pixel & 0x1f) << 3;
@@ -2672,20 +2672,20 @@ void Convert16To8 (int width, int height)
     if (!GUI.image_needs_scaling)
     {
 	// Convert
-	for (register int y = 0; y < height; y++)
+	for ( int y = 0; y < height; y++)
 	{
-	    register uint8 *d = (uint8 *) GUI.image_date + y * GUI.bytes_per_line;
-	    register uint16 *s = (uint16 *) (GUI.output_screen + y * GUI.output_pitch);
+	     uint8 *d = (uint8 *) GUI.image_date + y * GUI.bytes_per_line;
+	     uint16 *s = (uint16 *) (GUI.output_screen + y * GUI.output_pitch);
 
-	    for (register int x = 0; x < width; x++)
+	    for ( int x = 0; x < width; x++)
 		*d++ = GUI.palette [*s++];
 	}
     }
     else
     {
 	// Scale and convert
-	register uint32 x_error;
-	register uint32 x_fraction;
+	 uint32 x_error;
+	 uint32 x_fraction;
 	uint32 y_error = 0;
 	uint32 y_fraction;
 	int yy = 0;
@@ -2695,8 +2695,8 @@ void Convert16To8 (int width, int height)
 	
 	for (int y = 0; y < GUI.window_height; y++)
 	{
-	    register uint8 *d = (uint8 *) GUI.image_date + y * GUI.bytes_per_line;
-	    register uint16 *s = (uint16 *) (GUI.output_screen + yy * GUI.output_pitch);
+	     uint8 *d = (uint8 *) GUI.image_date + y * GUI.bytes_per_line;
+	     uint16 *s = (uint16 *) (GUI.output_screen + yy * GUI.output_pitch);
 	    y_error += y_fraction;
 	    while (y_error >= 0x10000)
 	    {
@@ -2704,7 +2704,7 @@ void Convert16To8 (int width, int height)
 		y_error -= 0x10000;
 	    }
 	    x_error = 0;
-	    for (register int x = 0; x < GUI.window_width; x++)
+	    for ( int x = 0; x < GUI.window_width; x++)
 	    {
 		*d++ = GUI.palette [*s];
 		       
@@ -2729,12 +2729,12 @@ void Convert8To16 (int width, int height)
     if (!GUI.image_needs_scaling)
     {
 	// Convert
-	for (register int y = 0; y < height; y++)
+	for ( int y = 0; y < height; y++)
 	{
-	    register uint16 *d = (uint16 *) (GUI.image_date + y * GUI.bytes_per_line);
-	    register uint8 *s = GUI.output_screen + y * GUI.output_pitch;
+	     uint16 *d = (uint16 *) (GUI.image_date + y * GUI.bytes_per_line);
+	     uint8 *s = GUI.output_screen + y * GUI.output_pitch;
 
-	    for (register int x = 0; x < width; x++)
+	    for ( int x = 0; x < width; x++)
 	    {
 		uint32 pixel = PPU.CGDATA [*s++];
 		*d++ = (levels [pixel & 0x1f] << GUI.red_shift) |
@@ -2746,8 +2746,8 @@ void Convert8To16 (int width, int height)
     else
     {
 	// Scale and convert
-	register uint32 x_error;
-	register uint32 x_fraction;
+	 uint32 x_error;
+	 uint32 x_fraction;
 	uint32 y_error = 0;
 	uint32 y_fraction;
 	int yy = 0;
@@ -2757,9 +2757,9 @@ void Convert8To16 (int width, int height)
 	
 	for (int y = 0; y < GUI.window_height; y++)
 	{
-	    register uint16 *d = (uint16 *) (GUI.image_date +
+	     uint16 *d = (uint16 *) (GUI.image_date +
 					   y * GUI.bytes_per_line);
-	    register uint8 *s = GUI.output_screen + yy * GUI.output_pitch;
+	     uint8 *s = GUI.output_screen + yy * GUI.output_pitch;
 	    y_error += y_fraction;
 	    while (y_error >= 0x10000)
 	    {
@@ -2767,7 +2767,7 @@ void Convert8To16 (int width, int height)
 		y_error -= 0x10000;
 	    }
 	    x_error = 0;
-	    for (register int x = 0; x < GUI.window_width; x++)
+	    for ( int x = 0; x < GUI.window_width; x++)
 	    {
 		uint32 pixel = PPU.CGDATA [*s];
 		*d++ = (levels [pixel & 0x1f] << GUI.red_shift) |

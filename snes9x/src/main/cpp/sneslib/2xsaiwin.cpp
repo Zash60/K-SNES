@@ -186,11 +186,11 @@ STATIC inline uint32 INTERPOLATE(uint32 A, uint32 B)
 
 STATIC inline uint32 Q_INTERPOLATE(uint32 A, uint32 B, uint32 C, uint32 D)
 {
-        register uint32 x = ((A & qcolorMask) >> 2) +
+         uint32 x = ((A & qcolorMask) >> 2) +
                             ((B & qcolorMask) >> 2) +
                             ((C & qcolorMask) >> 2) +
                             ((D & qcolorMask) >> 2);
-        register uint32 y = (A & qlowpixelMask) +
+         uint32 y = (A & qlowpixelMask) +
                             (B & qlowpixelMask) +
                             (C & qlowpixelMask) +
                             (D & qlowpixelMask);
@@ -282,7 +282,7 @@ void Super2xSaI(uint8 *srcPtr, uint32 srcPitch,
                 else
                 if (color5 == color3 && color2 == color6 && color5 != color6)
                 {
-                   register int r = 0;
+                    int r = 0;
 
                    r += GetResult (color6, color5, color1, colorA1);
                    r += GetResult (color6, color5, color4, colorB1);
@@ -477,7 +477,7 @@ void SuperEagle(uint8 *srcPtr, uint32 srcPitch,
                 else
                 if (color5 == color3 && color2 == color6 && color5 != color6)
                 {
-                   register int r = 0;
+                    int r = 0;
 
                    r += GetResult (color6, color5, color1, colorA1);
                    r += GetResult (color6, color5, color4, colorB1);
@@ -584,7 +584,7 @@ void _2xSaI(uint8 *srcPtr, uint32 srcPitch,
             {
 
 
-                register uint32 colorA, colorB;
+                 uint32 colorA, colorB;
                 uint32 colorC, colorD,
                        colorE, colorF, colorG, colorH,
                        colorI, colorJ, colorK, colorL,
@@ -675,7 +675,7 @@ void _2xSaI(uint8 *srcPtr, uint32 srcPitch,
                            }
                            else
                            {
-                              register int r = 0;
+                               int r = 0;
                               product1 = INTERPOLATE(colorA, colorC);
                               product = INTERPOLATE(colorA, colorB);
 

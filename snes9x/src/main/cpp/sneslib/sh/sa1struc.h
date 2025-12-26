@@ -209,7 +209,7 @@
 #ifdef SPC700_C
 #define APUPC APUPCS
 #else
-#errir No register allocated for APUPC
+#errir No  allocated for APUPC
 #endif
 
 #define FLAGS r10

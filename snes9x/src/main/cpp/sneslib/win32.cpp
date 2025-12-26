@@ -1885,12 +1885,12 @@ void Convert8To24 (SSurface *src, SSurface *dst, RECT *srect)
                    ((((pixel >> 5) & 0x1f) * brightness) << GUI.GreenShift) |
                    ((((pixel >> 10) & 0x1f) * brightness) << GUI.BlueShift);
     }
-    for (register int y = 0; y < height; y++)
+    for ( int y = 0; y < height; y++)
     {
-        register uint8 *s = ((uint8 *) src->Surface + y * src->Pitch + offset1);
-        register uint32 *d = (uint32 *) ((uint8 *) dst->Surface + 
+         uint8 *s = ((uint8 *) src->Surface + y * src->Pitch + offset1);
+         uint32 *d = (uint32 *) ((uint8 *) dst->Surface + 
                                          y * dst->Pitch + offset2);
-        for (register int x = 0; x < width; x++)
+        for ( int x = 0; x < width; x++)
             *d++ = conv [PPU.CGDATA [*s++]];
     }
 }
@@ -1903,12 +1903,12 @@ void Convert16To24 (SSurface *src, SSurface *dst, RECT *srect)
     int offset2 = ((dst->Height - height) >> 1) * dst->Pitch +
         ((dst->Width - width) >> 1) * sizeof (uint32);
 
-    for (register int y = 0; y < height; y++)
+    for ( int y = 0; y < height; y++)
     {
-        register uint16 *s = (uint16 *) ((uint8 *) src->Surface + y * src->Pitch + offset1);
-        register uint32 *d = (uint32 *) ((uint8 *) dst->Surface + 
+         uint16 *s = (uint16 *) ((uint8 *) src->Surface + y * src->Pitch + offset1);
+         uint32 *d = (uint32 *) ((uint8 *) dst->Surface + 
                                          y * dst->Pitch + offset2);
-        for (register int x = 0; x < width; x++)
+        for ( int x = 0; x < width; x++)
         {
             uint32 pixel = *s++;
             *d++ = (((pixel >> 11) & 0x1f) << GUI.RedShift) |
@@ -1931,10 +1931,10 @@ void Convert8To24Packed (SSurface *src, SSurface *dst, RECT *srect)
     for (int l = 0; l < 32; l++)
 	levels [l] = l * brightness;
 	
-    for (register int y = 0; y < height; y++)
+    for ( int y = 0; y < height; y++)
     {
-        register uint8 *s = ((uint8 *) src->Surface + y * src->Pitch + offset1);
-        register uint8 *d = ((uint8 *) dst->Surface + y * dst->Pitch + offset2);
+         uint8 *s = ((uint8 *) src->Surface + y * src->Pitch + offset1);
+         uint8 *d = ((uint8 *) dst->Surface + y * dst->Pitch + offset2);
         
 #ifdef LSB_FIRST
         if (GUI.RedShift < GUI.BlueShift)
@@ -1943,7 +1943,7 @@ void Convert8To24Packed (SSurface *src, SSurface *dst, RECT *srect)
 #endif
         {
             // Order is RGB
-            for (register int x = 0; x < width; x++)
+            for ( int x = 0; x < width; x++)
             {
                 uint16 pixel = PPU.CGDATA [*s++];
                 *(d + 0) = levels [(pixel & 0x1f)];
@@ -1955,7 +1955,7 @@ void Convert8To24Packed (SSurface *src, SSurface *dst, RECT *srect)
         else
         {
             // Order is BGR
-            for (register int x = 0; x < width; x++)
+            for ( int x = 0; x < width; x++)
             {
                 uint16 pixel = PPU.CGDATA [*s++];
                 *(d + 0) = levels [((pixel >> 10) & 0x1f)];
@@ -1975,10 +1975,10 @@ void Convert16To24Packed (SSurface *src, SSurface *dst, RECT *srect)
     int offset2 = ((dst->Height - height) >> 1) * dst->Pitch +
         ((dst->Width - width) >> 1) * 3;
 
-    for (register int y = 0; y < height; y++)
+    for ( int y = 0; y < height; y++)
     {
-        register uint16 *s = (uint16 *) ((uint8 *) src->Surface + y * src->Pitch + offset1);
-        register uint8 *d = ((uint8 *) dst->Surface + y * dst->Pitch + offset2);
+         uint16 *s = (uint16 *) ((uint8 *) src->Surface + y * src->Pitch + offset1);
+         uint8 *d = ((uint8 *) dst->Surface + y * dst->Pitch + offset2);
         
 #ifdef LSB_FIRST
         if (GUI.RedShift < GUI.BlueShift)
@@ -1987,7 +1987,7 @@ void Convert16To24Packed (SSurface *src, SSurface *dst, RECT *srect)
 #endif
         {
             // Order is RGB
-            for (register int x = 0; x < width; x++)
+            for ( int x = 0; x < width; x++)
             {
                 uint32 pixel = *s++;
                 *(d + 0) = (pixel >> (11 - 3)) & 0xf8;
@@ -1999,7 +1999,7 @@ void Convert16To24Packed (SSurface *src, SSurface *dst, RECT *srect)
         else
         {
             // Order is BGR
-            for (register int x = 0; x < width; x++)
+            for ( int x = 0; x < width; x++)
             {
                 uint32 pixel = *s++;
                 *(d + 0) = (pixel & 0x1f) << 3;
@@ -2019,12 +2019,12 @@ void Convert16To8 (SSurface *src, SSurface *dst, RECT *srect)
     int offset2 = ((dst->Height - height) >> 1) * dst->Pitch +
         ((dst->Width - width) >> 1);
 
-    for (register int y = 0; y < height; y++)
+    for ( int y = 0; y < height; y++)
     {
-        register uint16 *s = (uint16 *) ((uint8 *) src->Surface + y * src->Pitch + offset1);
-        register uint8 *d = ((uint8 *) dst->Surface + y * dst->Pitch + offset2);
+         uint16 *s = (uint16 *) ((uint8 *) src->Surface + y * src->Pitch + offset1);
+         uint8 *d = ((uint8 *) dst->Surface + y * dst->Pitch + offset2);
 
-        for (register int x = 0; x < width; x++)
+        for ( int x = 0; x < width; x++)
             *d++ = palette [*s++];
     }
 }
@@ -2050,12 +2050,12 @@ void Convert8To16 (SSurface *src, SSurface *dst, RECT *srect)
                    (levels [(pixel >> 5) & 0x1f] << GUI.GreenShift) |
                    (levels [(pixel >> 10) & 0x1f] << GUI.BlueShift);
     }
-    for (register int y = 0; y < height; y++)
+    for ( int y = 0; y < height; y++)
     {
-        register uint8 *s = ((uint8 *) src->Surface + y * src->Pitch + offset1);
-        register uint16 *d = (uint16 *) ((uint8 *) dst->Surface + 
+         uint8 *s = ((uint8 *) src->Surface + y * src->Pitch + offset1);
+         uint16 *d = (uint16 *) ((uint8 *) dst->Surface + 
                                          y * dst->Pitch + offset2);
-        for (register int x = 0; x < width; x += 2)
+        for ( int x = 0; x < width; x += 2)
         {
             *(uint32 *) d = conv [*s] | (conv [*(s + 1)] << 16);
             s += 2;
@@ -2460,7 +2460,7 @@ static void DoAVIVideoFrame(SSurface* source_surface, int Width, int Height, boo
 
 		int q;
 		{
-			register uint32 a, b;
+			 uint32 a, b;
 			for(q=pitch>>4; q>0; --q)
 			{
 				a=*lo_32;  b=*hi_32;  *lo_32=b;  *hi_32=a;  ++lo_32;  ++hi_32;
@@ -2471,7 +2471,7 @@ static void DoAVIVideoFrame(SSurface* source_surface, int Width, int Height, boo
 		}
 
 		{
-			register uint8 c, d;
+			 uint8 c, d;
 			for(q=(pitch&0x0f); q>0; --q)
 			{
 				c=*lo_8;  d=*hi_8;  *lo_8=d;  *hi_8=c;

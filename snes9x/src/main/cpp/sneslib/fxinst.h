@@ -90,14 +90,14 @@
 #define _FXINST_H_ 1
 
 /*
- * FxChip(GSU) register space specification
+ * FxChip(GSU)  space specification
  * (Register address space 3000->32ff)
  *
  * The 16 generic 16 bit registers:
  * (Some have a special function in special circumstances)
- * 3000 - R0	default source/destination register
- * 3002 - R1	pixel plot X position register
- * 3004 - R2	pixel plot Y position register
+ * 3000 - R0	default source/destination 
+ * 3002 - R1	pixel plot X position 
+ * 3004 - R2	pixel plot Y position 
  * 3006 - R3
  * 3008 - R4	lower 16 bit result of lmult
  * 300a - R5 
@@ -115,26 +115,26 @@
  * 3020-302f -	unused
  * 
  * Other internal registers
- * 3030 - SFR	status flag register (16bit)
+ * 3030 - SFR	status flag  (16bit)
  * 3032 -	unused
- * 3033 - BRAMR Backup RAM register (8bit)
- * 3034 - PBR	program bank register (8bit)
+ * 3033 - BRAMR Backup RAM  (8bit)
+ * 3034 - PBR	program bank  (8bit)
  * 3035 -	unused
- * 3036 - ROMBR	rom bank register (8bit)
- * 3037 - CFGR	control flags register (8bit)
- * 3038 - SCBR	screen base register (8bit)
- * 3039 - CLSR	clock speed register (8bit)
- * 303a - SCMR	screen mode register (8bit)
- * 303b - VCR	version code register (8bit) (read only)
- * 303c - RAMBR	ram bank register (8bit)
+ * 3036 - ROMBR	rom bank  (8bit)
+ * 3037 - CFGR	control flags  (8bit)
+ * 3038 - SCBR	screen base  (8bit)
+ * 3039 - CLSR	clock speed  (8bit)
+ * 303a - SCMR	screen mode  (8bit)
+ * 303b - VCR	version code  (8bit) (read only)
+ * 303c - RAMBR	ram bank  (8bit)
  * 303d -	unused
- * 303e - CBR	cache base register (16bit)
+ * 303e - CBR	cache base  (16bit)
  *
  * 3040-30ff -	unused
  *
  * 3100-32ff -	CACHERAM 512 bytes of GSU cache memory
  *
- * SFR status flag register bits:
+ * SFR status flag  bits:
  *  0   -	
  *  1   Z	Zero flag
  *  2   CY	Carry flag
@@ -156,7 +156,7 @@
  * BRAMR = 0, BackupRAM is disabled
  * BRAMR = 1, BackupRAM is enabled
  *
- * CFGR control flags register bits:
+ * CFGR control flags  bits:
  *  0   -	
  *  1   -	
  *  2   -	
@@ -166,10 +166,10 @@
  *  6   -	
  *  7   IRQ	Set to 1 when GSU interrupt request is masked
  *
- * CLSR clock speed register bits:
+ * CLSR clock speed  bits:
  *  0   CLSR	clock speed, 0 = 10.7Mhz, 1 = 21.4Mhz
  *
- * SCMR screen mode register bits:
+ * SCMR screen mode  bits:
  *  0	MD0	color depth mode bit 0
  *  1	MD1	color depth mode bit 1
  *  2	HT0	screen height bit 1
@@ -197,7 +197,7 @@
  *  1    0   not used
  *  1    1   256 color mode
  *
- * CBR cache base register bits:
+ * CBR cache base  bits:
  * 15-4	     Specify base address for data to cache from ROM or RAM
  *  3-0	     Are 0 when address is read
  *
@@ -220,22 +220,22 @@ struct FxRegs_s
 {
     /* FxChip registers */
     uint32	avReg[16];		/* 16 Generic registers */
-    uint32	vColorReg;		/* Internal color register */
-    uint32	vPlotOptionReg;		/* Plot option register */
-    uint32	vStatusReg;		/* Status register */
-    uint32	vPrgBankReg;		/* Program bank index register */
-    uint32	vRomBankReg;		/* Rom bank index register */
-    uint32	vRamBankReg;		/* Ram bank index register */
-    uint32	vCacheBaseReg;		/* Cache base address register */
+    uint32	vColorReg;		/* Internal color  */
+    uint32	vPlotOptionReg;		/* Plot option  */
+    uint32	vStatusReg;		/* Status  */
+    uint32	vPrgBankReg;		/* Program bank index  */
+    uint32	vRomBankReg;		/* Rom bank index  */
+    uint32	vRamBankReg;		/* Ram bank index  */
+    uint32	vCacheBaseReg;		/* Cache base address  */
     uint32	vCacheFlags;		/* Saying what parts of the cache was written to */
     uint32	vLastRamAdr;		/* Last RAM address accessed */
-    uint32 *	pvDreg;			/* Pointer to current destination register */
-    uint32 *	pvSreg;			/* Pointer to current source register */
+    uint32 *	pvDreg;			/* Pointer to current destination  */
+    uint32 *	pvSreg;			/* Pointer to current source  */
     uint8	vRomBuffer;		/* Current byte read by R14 */
     uint8	vPipe;			/* Instructionset pipe */
     uint32	vPipeAdr;		/* The address of where the pipe was read from */
 
-    /* status register optimization stuff */
+    /* status  optimization stuff */
     uint32	vSign;			/* v & 0x8000 */
     uint32	vZero;			/* v == 0 */
     uint32	vCarry;			/* a value of 1 or 0 */
@@ -387,10 +387,10 @@ struct FxRegs_s
 /* ABS */
 #define ABS(x) ((x)<0?-(x):(x))
 
-/* Access source register */
+/* Access source  */
 #define SREG (*GSU.pvSreg)
 
-/* Access destination register */
+/* Access destination  */
 #define DREG (*GSU.pvDreg)
 
 #ifndef FX_DO_ROMBUFFER

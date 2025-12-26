@@ -115,7 +115,7 @@ uint8 S9xGetST018(uint32 Address)
 		else
 			t = 0x81;
 	}
-	// status register
+	// status 
 	else if (address == 0x3800)
 		t = ST018.status;
 	

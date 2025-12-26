@@ -669,9 +669,9 @@ void S9xPutImage (int width, int height)
 	    memcpy (vga_getgraphmem () + screen_pitch * y_start,
 		    GFX.Screen, width * height);
 #else
-	    register uint32 *s = (uint32 *) (vga_getgraphmem () + screen_pitch * y_start);
-	    register uint32 *o = (uint32 *) DeltaScreen;
-	    register uint32 *n = (uint32 *) GFX.Screen;
+	     uint32 *s = (uint32 *) (vga_getgraphmem () + screen_pitch * y_start);
+	     uint32 *o = (uint32 *) DeltaScreen;
+	     uint32 *n = (uint32 *) GFX.Screen;
 	    uint32 *end = (uint32 *) (GFX.Screen + width * height);
 	    do
 	    {
@@ -688,8 +688,8 @@ void S9xPutImage (int width, int height)
 	{
 	    if (stretch && screen_width != width)
 	    {
-		register uint32 x_error;
-		register uint32 x_fraction;
+		 uint32 x_error;
+		 uint32 x_fraction;
 		uint32 y_error = 0;
 		uint32 y_fraction;
 		int yy = 0;
@@ -699,8 +699,8 @@ void S9xPutImage (int width, int height)
 		
 		for (int y = 0; y < height; y++)
 		{
-		    register uint8 *d = (uint8 *) vga_getgraphmem () + y * screen_pitch;
-		    register uint8 *s = GFX.Screen + yy * GFX.Pitch;
+		     uint8 *d = (uint8 *) vga_getgraphmem () + y * screen_pitch;
+		     uint8 *s = GFX.Screen + yy * GFX.Pitch;
 		    y_error += y_fraction;
 		    while (y_error >= 0x10000)
 		    {
@@ -708,7 +708,7 @@ void S9xPutImage (int width, int height)
 			y_error -= 0x10000;
 		    }
 		    x_error = 0;
-		    for (register int x = 0; x < width; x++)
+		    for ( int x = 0; x < width; x++)
 		    {
 			*d++ = *s;
 			x_error += x_fraction;
@@ -809,7 +809,7 @@ void outReg(Register r)
 
 /*
     readyVgaRegs() does the initialization to make the VGA ready to
-    accept any combination of configuration register settings.
+    accept any combination of configuration  settings.
 
     This involves enabling writes to index 0 to 7 of the CRT controller
     (port 0x3d4), by clearing the most significant bit (bit 7) of index

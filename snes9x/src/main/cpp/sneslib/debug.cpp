@@ -151,7 +151,7 @@ char *HelpMessage[] = {
     "D                 - Toggle DMA tracing to stdout",
     "H                 - Toggle H-DMA tracing to stdout",
     "P		       - Toggle DSP tracing to stdout",
-    "U                 - Toggle unknown register read/write tracing",
+    "U                 - Toggle unknown  read/write tracing",
     "V                 - Toggle non-DMA V-RAM read/write tracing",
     "R                 - Reset ROM.",
     "p                 - Proceed to next instruction [Step-over]",
@@ -176,7 +176,7 @@ char *HelpMessage[] = {
     "                        [For example: #1]",
     "a                 - Show Sound CPU status",
     "A                 - Toggle sound CPU instruction tracing to aputrace.log",
-    "B                 - Toggle sound DSP register tracing",
+    "B                 - Toggle sound DSP  tracing",
     "C		       - Dump sound sample addresses",
     "ad [Address]      - Dump sound CPU RAM from PC or [Address]",
     "", NULL};
@@ -1363,7 +1363,7 @@ void ProcessDebugCommand (char *Line)
     if (*Line == 'B')
     {
 	Settings.TraceSoundDSP ^= 1;
-	printf ("Sound DSP register tracing %s\n", Settings.TraceSoundDSP ?
+	printf ("Sound DSP  tracing %s\n", Settings.TraceSoundDSP ?
 						   "enabled" : "disabled");
 
 	S9xOpenCloseSoundTracingFile (Settings.TraceSoundDSP);
@@ -2119,17 +2119,17 @@ static void WhatsMissing ()
 	}
     }
     if (missing.unknownppu_read)
-	printf ("Read from unknown PPU register: $%04X\n", missing.unknownppu_read);
+	printf ("Read from unknown PPU : $%04X\n", missing.unknownppu_read);
     if (missing.unknownppu_write)
-	printf ("Write to unknown PPU register: $%04X\n", missing.unknownppu_write);
+	printf ("Write to unknown PPU : $%04X\n", missing.unknownppu_write);
     if (missing.unknowncpu_read)
-	printf ("Read from unknown CPU register: $%04X\n", missing.unknowncpu_read);
+	printf ("Read from unknown CPU : $%04X\n", missing.unknowncpu_read);
     if (missing.unknowncpu_write)
-	printf ("Write to unknown CPU register: $%04X\n", missing.unknowncpu_write);
+	printf ("Write to unknown CPU : $%04X\n", missing.unknowncpu_write);
     if (missing.unknowndsp_read)
-	printf ("Read from unknown DSP register: $%04X\n", missing.unknowndsp_read);
+	printf ("Read from unknown DSP : $%04X\n", missing.unknowndsp_read);
     if (missing.unknowndsp_write)
-	printf ("Write to unknown DSP register: $%04X\n", missing.unknowndsp_write);
+	printf ("Write to unknown DSP : $%04X\n", missing.unknowndsp_write);
 }
 
 void S9xDoDebug ()

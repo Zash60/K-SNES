@@ -735,7 +735,7 @@ void S9xSetAPUDSP (uint8 byte)
 		break;
     default:
 		// XXX
-		//printf ("Write %02x to unknown APU register %02x\n", byte, reg);
+		//printf ("Write %02x to unknown APU  %02x\n", byte, reg);
 		break;
     }
 	
