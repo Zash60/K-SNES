@@ -193,19 +193,18 @@ public class KeyProfilesActivity extends ListActivity {
 		AdapterView.AdapterContextMenuInfo info =
 				(AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
-		switch (item.getItemId()) {
-		case MENU_ITEM_EDIT:
+		if (item.getItemId() == MENU_ITEM_EDIT) {
 			currentProfile = (String) getListAdapter().getItem(info.position);
 			showDialog(DIALOG_EDIT_PROFILE);
 			return true;
-
-		case MENU_ITEM_DELETE:
+		} else if (item.getItemId() == MENU_ITEM_DELETE) {
 			String name = (String) getListAdapter().getItem(info.position);
 			if (getProfileFile(this, name).delete())
 				refresh();
 			return true;
+		} else {
+			return super.onContextItemSelected(item);
 		}
-		return super.onContextItemSelected(item);
 	}
 
 	@Override
