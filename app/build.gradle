@@ -51,7 +51,7 @@ dependencies {
     implementation otherDependencies.dagger
     kapt otherDependencies.daggerCompiler
     implementation otherDependencies.kotlinStdlib
-    provided otherDependencies.javaxAnnotation
+    compileOnly otherDependencies.javaxAnnotation
     
     // Module dependencies
     debugImplementation project(path: ':abstractemulator', configuration: "debug")
