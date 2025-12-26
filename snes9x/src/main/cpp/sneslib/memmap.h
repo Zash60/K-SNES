@@ -235,7 +235,7 @@ public:
     uint32 SDD1Entries;
     uint32 SDD1LoggedDataCountPrev;
     uint32 SDD1LoggedDataCount;
-    uint8  SDD1LoggedData [MEMMAP_MAX_SDD1_LOGGED_ENTRIES];
+    uint8  SDD1LoggedData [MEMMAP_MAX_SDD1_LOGGED_ENTRIES * 8];
     char ROMFilename [_MAX_PATH];
 	uint8 ROMRegion;
     uint32 ROMCRC32;
