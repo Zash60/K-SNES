@@ -54,23 +54,23 @@ dependencies {
     compileOnly otherDependencies.javaxAnnotation
     
     // Module dependencies
-    debugImplementation project(path: ':abstractemulator', configuration: "debug")
-    releaseImplementation project(path: ':abstractemulator', configuration: "release")
+    debugImplementation project(':abstractemulator')
+    releaseImplementation project(':abstractemulator')
 
-    debugImplementation project(path: ':snes9x', configuration: "debug")
-    releaseImplementation project(path: ':snes9x', configuration: "release")
+    debugImplementation project(':snes9x')
+    releaseImplementation project(':snes9x')
 
-    debugImplementation project(path: ':input', configuration: "debug")
-    releaseImplementation project(path: ':input', configuration: "release")
+    debugImplementation project(':input')
+    releaseImplementation project(':input')
 
-    debugImplementation project(path: ':multiplayer', configuration: "debug")
-    releaseImplementation project(path: ':multiplayer', configuration: "release")
+    debugImplementation project(':multiplayer')
+    releaseImplementation project(':multiplayer')
 
-    debugImplementation project(path: ':preferences', configuration: "debug")
-    releaseImplementation project(path: ':preferences', configuration: "release")
+    debugImplementation project(':preferences')
+    releaseImplementation project(':preferences')
 
-    debugImplementation project(path: ':roms', configuration: "debug")
-    releaseImplementation project(path: ':roms', configuration: "release")
+    debugImplementation project(':roms')
+    releaseImplementation project(':roms')
     
     // Test dependencies
     testImplementation 'junit:junit:4.13.2'

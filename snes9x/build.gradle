@@ -48,6 +48,6 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     
     // Module dependencies
-    debugImplementation project(path: ':abstractemulator', configuration: "debug")
-    releaseImplementation project(path: ':abstractemulator', configuration: "release")
+    debugImplementation project(':abstractemulator')
+    releaseImplementation project(':abstractemulator')
 }
