@@ -171,13 +171,13 @@ public class KeyProfilesActivity extends ListActivity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.menu_new_profile:
+		if (item.getItemId() == R.id.menu_new_profile) {
 			currentProfile = null;
 			showDialog(DIALOG_EDIT_PROFILE);
 			return true;
+		} else {
+			return super.onOptionsItemSelected(item);
 		}
-		return super.onOptionsItemSelected(item);
 	}
 
 	@Override

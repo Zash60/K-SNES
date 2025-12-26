@@ -159,13 +159,13 @@ public class CheatsActivity extends ListActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_add_cheat:
-                mCurrentCheat = null;
-                showDialog(DIALOG_EDIT_CHEAT);
-                return true;
+        if (item.getItemId() == R.id.menu_add_cheat) {
+            mCurrentCheat = null;
+            showDialog(DIALOG_EDIT_CHEAT);
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

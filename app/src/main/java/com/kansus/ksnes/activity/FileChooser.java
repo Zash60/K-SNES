@@ -73,12 +73,12 @@ public class FileChooser extends ListActivity implements FileFilter, View.OnClic
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.menu_refresh:
+		if (item.getItemId() == R.id.menu_refresh) {
 			changeTo(currentDir);
 			return true;
+		} else {
+			return super.onOptionsItemSelected(item);
 		}
-		return super.onOptionsItemSelected(item);
 	}
 	
 	@Override
@@ -133,15 +133,12 @@ public class FileChooser extends ListActivity implements FileFilter, View.OnClic
 	}
 
 	public void onClick(View v) {
-		switch (v.getId()) {
-		case R.id.goto_sdcard:
+		if (v.getId() == R.id.goto_sdcard) {
 			changeTo(sdcardDir);
-			break;
-		case R.id.goto_parent:
+		} else if (v.getId() == R.id.goto_parent) {
 			File parent = currentDir.getParentFile();
 			if (parent != null)
 				changeTo(parent);
-			break;
 		}
 	}
 

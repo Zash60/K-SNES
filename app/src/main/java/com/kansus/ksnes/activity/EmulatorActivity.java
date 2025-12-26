@@ -339,72 +339,59 @@ public class EmulatorActivity extends Activity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_settings:
-                startActivity(new Intent(this, EmulatorSettings.class));
-                return true;
-
-            case R.id.menu_reset:
-                try {
-                    if (netPlayService != null)
-                        netPlayService.sendResetROM();
-                    mEmulator.reset();
-                } catch (IOException e) {
-                    Log.e(LOG_TAG, e.getMessage());
-                }
-                return true;
-
-            case R.id.menu_fast_forward:
-                onFastForward();
-                return true;
-
-            case R.id.menu_screenshot:
-                onScreenshot();
-                return true;
-
-            case R.id.menu_cheats:
-                startActivity(new Intent(this, CheatsActivity.class));
-                return true;
-
-            case R.id.menu_save_state:
-                onSaveState();
-                return true;
-
-            case R.id.menu_load_state:
-                onLoadState();
-                return true;
-
-            case R.id.menu_wifi_server:
-                onWifiServer();
-                return true;
-
-            case R.id.menu_wifi_client:
-                showDialog(DIALOG_WIFI_CONNECT);
-                return true;
-
-            case R.id.menu_bluetooth_server:
-                if (checkBluetoothEnabled(REQUEST_ENABLE_BT_SERVER))
-                    onBluetoothServer();
-                return true;
-
-            case R.id.menu_bluetooth_client:
-                if (checkBluetoothEnabled(REQUEST_ENABLE_BT_CLIENT))
-                    onBluetoothClient();
-                return true;
-
-            case R.id.menu_netplay_disconnect:
-                onDisconnect();
-                return true;
-
-            case R.id.menu_netplay_sync:
-                onNetPlaySync();
-                return true;
-
-            case R.id.menu_close:
-                finish();
-                return true;
+        if (item.getItemId() == R.id.menu_settings) {
+            startActivity(new Intent(this, EmulatorSettings.class));
+            return true;
+        } else if (item.getItemId() == R.id.menu_reset) {
+            try {
+                if (netPlayService != null)
+                    netPlayService.sendResetROM();
+                mEmulator.reset();
+            } catch (IOException e) {
+                Log.e(LOG_TAG, e.getMessage());
+            }
+            return true;
+        } else if (item.getItemId() == R.id.menu_fast_forward) {
+            onFastForward();
+            return true;
+        } else if (item.getItemId() == R.id.menu_screenshot) {
+            onScreenshot();
+            return true;
+        } else if (item.getItemId() == R.id.menu_cheats) {
+            startActivity(new Intent(this, CheatsActivity.class));
+            return true;
+        } else if (item.getItemId() == R.id.menu_save_state) {
+            onSaveState();
+            return true;
+        } else if (item.getItemId() == R.id.menu_load_state) {
+            onLoadState();
+            return true;
+        } else if (item.getItemId() == R.id.menu_wifi_server) {
+            onWifiServer();
+            return true;
+        } else if (item.getItemId() == R.id.menu_wifi_client) {
+            showDialog(DIALOG_WIFI_CONNECT);
+            return true;
+        } else if (item.getItemId() == R.id.menu_bluetooth_server) {
+            if (checkBluetoothEnabled(REQUEST_ENABLE_BT_SERVER))
+                onBluetoothServer();
+            return true;
+        } else if (item.getItemId() == R.id.menu_bluetooth_client) {
+            if (checkBluetoothEnabled(REQUEST_ENABLE_BT_CLIENT))
+                onBluetoothClient();
+            return true;
+        } else if (item.getItemId() == R.id.menu_netplay_disconnect) {
+            onDisconnect();
+            return true;
+        } else if (item.getItemId() == R.id.menu_netplay_sync) {
+            onNetPlaySync();
+            return true;
+        } else if (item.getItemId() == R.id.menu_close) {
+            finish();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
