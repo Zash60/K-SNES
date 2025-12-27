@@ -25,6 +25,10 @@ public class NetPlayService {
     public static final int MESSAGE_POWER_ROM = 3;
     public static final int MESSAGE_RESET_ROM = 4;
     public static final int MESSAGE_SAVED_STATE = 5;
+    public static final int MESSAGE_SAVED_STATE_CHUNK = 6;
+    public static final int MESSAGE_SAVED_STATE_END = 7;
+
+    private static final int CHUNK_SIZE = 64 * 1024;
 
     public static final int E_CONNECT_FAILED = 1;
     public static final int E_PROTOCOL_INCOMPATIBLE = 2;
@@ -36,6 +40,8 @@ public class NetPlayService {
     private static final short CMD_POWER_ROM = 3;
     private static final short CMD_RESET_ROM = 4;
     private static final short CMD_SAVED_STATE = 5;
+    private static final short CMD_SAVED_STATE_CHUNK = 6;
+    private static final short CMD_SAVED_STATE_END = 7;
 
     private static final String BT_SERVICE_NAME = "K-SNES";
     private static final UUID BT_SERVICE_UUID = UUID.fromString(
@@ -54,6 +60,9 @@ public class NetPlayService {
     private int remoteFrameCount;
     private int remoteKeys;
     private Object frameLock = new Object();
+
+    private ByteArrayOutputStream savedStateBuffer;
+    private int expectedSavedStateSize;
 
     public NetPlayService(Handler h) {
         handler = h;
@@ -142,9 +151,17 @@ public class NetPlayService {
 
     public void sendSavedState(byte[] state) throws IOException {
         resetFrame();
-        outputStream.writePacket(
-                createPacket(CMD_SAVED_STATE, 4).putInt(state.length));
-        outputStream.writeBytes(state);
+        outputStream.writePacket(createPacket(CMD_SAVED_STATE, 4).putInt(state.length));
+
+        int offset = 0;
+        while (offset < state.length) {
+            int len = Math.min(state.length - offset, CHUNK_SIZE);
+            outputStream.writePacket(createPacket(CMD_SAVED_STATE_CHUNK, 4).putInt(len));
+            outputStream.writeBytes(state, offset, len);
+            offset += len;
+        }
+
+        outputStream.writePacket(createPacket(CMD_SAVED_STATE_END));
     }
 
     private void start(NetThread t) {
@@ -197,11 +214,6 @@ public class NetPlayService {
             handleHello(p);
         } else {
             sendHello();
-
-            p = inputStream.readPacket();
-            if (p.getShort() != CMD_SAVED_STATE)
-                throw new ProtocolException();
-            handleSavedState(p);
         }
         sendMessage(handler.obtainMessage(MESSAGE_CONNECTED));
 
@@ -217,7 +229,13 @@ public class NetPlayService {
                     handleResetROM(p);
                     break;
                 case CMD_SAVED_STATE:
-                    handleSavedState(p);
+                    handleSavedStateStart(p);
+                    break;
+                case CMD_SAVED_STATE_CHUNK:
+                    handleSavedStateChunk(p);
+                    break;
+                case CMD_SAVED_STATE_END:
+                    handleSavedStateEnd(p);
                     break;
                 default:
                     throw new ProtocolException();
@@ -260,14 +278,39 @@ public class NetPlayService {
         resetFrame();
     }
 
-    private void handleSavedState(ByteBuffer p) throws IOException {
+    private void handleSavedStateStart(ByteBuffer p) throws IOException {
         final int len = p.getInt();
         if (len <= 0 || len > MAX_SAVED_STATE_SIZE)
             throw new IOException();
 
+        expectedSavedStateSize = len;
+        savedStateBuffer = new ByteArrayOutputStream(expectedSavedStateSize);
+    }
+
+    private void handleSavedStateChunk(ByteBuffer p) throws IOException {
+        final int len = p.getInt();
+        if (len <= 0 || len > CHUNK_SIZE)
+            throw new IOException();
+
+        if (savedStateBuffer == null) {
+            throw new IOException("Saved state not initiated. Unexpected SAVED_STATE_CHUNK.");
+        }
+
         byte buffer[] = new byte[len];
         inputStream.readBytes(buffer);
-        sendMessage(handler.obtainMessage(MESSAGE_SAVED_STATE, buffer));
+        savedStateBuffer.write(buffer);
+
+        if (savedStateBuffer.size() > expectedSavedStateSize)
+            throw new IOException("Received more data than expected for saved state");
+    }
+
+    private void handleSavedStateEnd(ByteBuffer p) throws IOException {
+        if (savedStateBuffer == null || savedStateBuffer.size() != expectedSavedStateSize) {
+            throw new IOException("Saved state data incomplete or unexpected size");
+        }
+        sendMessage(handler.obtainMessage(MESSAGE_SAVED_STATE, savedStateBuffer.toByteArray()));
+        savedStateBuffer = null;
+        expectedSavedStateSize = 0;
         resetFrame();
     }
 
