@@ -181,7 +181,7 @@ static int state_unc_open(const char *fname, const char *mode)
 		{
 			state_mode = 0; //normal file mode
 			state_file = fopen(fname, mode);
-			return (int) state_file;
+			return state_file ? 1 : 0;
 		}
 	}
 	else
