@@ -151,9 +151,9 @@ END_EXTERN_C
     IAPU._Zero = (b);
 
 #define APUSetZN16(w)\
-    IAPU._Zero = ((w) != 0) | ((w) >> 8);
+    IAPU._Zero = (uint8)(w != 0);
 
-void STOP (char *s)
+void STOP (const char *s)
 {
     char buffer[100];
 
@@ -310,45 +310,45 @@ APUSetZN8 ((uint8) Int16);
 		  APURegisters.YA.B.Y;
 #endif
 
-void Apu00 ()
+void Apu00 (void)
 {
 // NOP
     IAPU.PC++;
 }
 
-void Apu01 () { TCALL (0) }
+void Apu01 (void) { TCALL (0) }
 
-void Apu11 () { TCALL (1) }
+void Apu11 (void) { TCALL (1) }
 
-void Apu21 () { TCALL (2) }
+void Apu21 (void) { TCALL (2) }
 
-void Apu31 () { TCALL (3) }
+void Apu31 (void) { TCALL (3) }
 
-void Apu41 () { TCALL (4) }
+void Apu41 (void) { TCALL (4) }
 
-void Apu51 () { TCALL (5) }
+void Apu51 (void) { TCALL (5) }
 
-void Apu61 () { TCALL (6) }
+void Apu61 (void) { TCALL (6) }
 
-void Apu71 () { TCALL (7) }
+void Apu71 (void) { TCALL (7) }
 
-void Apu81 () { TCALL (8) }
+void Apu81 (void) { TCALL (8) }
 
-void Apu91 () { TCALL (9) }
+void Apu91 (void) { TCALL (9) }
 
-void ApuA1 () { TCALL (10) }
+void ApuA1 (void) { TCALL (10) }
 
-void ApuB1 () { TCALL (11) }
+void ApuB1 (void) { TCALL (11) }
 
-void ApuC1 () { TCALL (12) }
+void ApuC1 (void) { TCALL (12) }
 
-void ApuD1 () { TCALL (13) }
+void ApuD1 (void) { TCALL (13) }
 
-void ApuE1 () { TCALL (14) }
+void ApuE1 (void) { TCALL (14) }
 
-void ApuF1 () { TCALL (15) }
+void ApuF1 (void) { TCALL (15) }
 
-void Apu3F () // CALL absolute
+void Apu3F (void) // CALL absolute
 {
     Absolute ();
     // 0xB6f for Star Fox 2
@@ -356,7 +356,7 @@ void Apu3F () // CALL absolute
     IAPU.PC = IAPU.RAM + IAPU.Address;
 }
 
-void Apu4F () // PCALL $XX
+void Apu4F (void) // PCALL $XX
 {
     Work8 = OP1;
     PushW (IAPU.PC + 2 - IAPU.RAM);
@@ -367,42 +367,42 @@ void Apu4F () // PCALL $XX
 S9xAPUSetByteZ ((uint8) (S9xAPUGetByteZ (OP1 ) | (1 << (b))), OP1); \
 IAPU.PC += 2
 
-void Apu02 ()
+void Apu02 (void)
 {
     SET (0);
 }
 
-void Apu22 ()
+void Apu22 (void)
 {
     SET (1);
 }
 
-void Apu42 ()
+void Apu42 (void)
 {
     SET (2);
 }
 
-void Apu62 ()
+void Apu62 (void)
 {
     SET (3);
 }
 
-void Apu82 ()
+void Apu82 (void)
 {
     SET (4);
 }
 
-void ApuA2 ()
+void ApuA2 (void)
 {
     SET (5);
 }
 
-void ApuC2 ()
+void ApuC2 (void)
 {
     SET (6);
 }
 
-void ApuE2 ()
+void ApuE2 (void)
 {
     SET (7);
 }
@@ -411,42 +411,42 @@ void ApuE2 ()
 S9xAPUSetByteZ ((uint8) (S9xAPUGetByteZ (OP1) & ~(1 << (b))), OP1); \
 IAPU.PC += 2;
 
-void Apu12 ()
+void Apu12 (void)
 {
     CLR (0);
 }
 
-void Apu32 ()
+void Apu32 (void)
 {
     CLR (1);
 }
 
-void Apu52 ()
+void Apu52 (void)
 {
     CLR (2);
 }
 
-void Apu72 ()
+void Apu72 (void)
 {
     CLR (3);
 }
 
-void Apu92 ()
+void Apu92 (void)
 {
     CLR (4);
 }
 
-void ApuB2 ()
+void ApuB2 (void)
 {
     CLR (5);
 }
 
-void ApuD2 ()
+void ApuD2 (void)
 {
     CLR (6);
 }
 
-void ApuF2 ()
+void ApuF2 (void)
 {
     CLR (7);
 }
@@ -462,42 +462,42 @@ if (S9xAPUGetByteZ (Work8) & (1 << (b))) \
 else \
     IAPU.PC += 3
 
-void Apu03 ()
+void Apu03 (void)
 {
     BBS (0);
 }
 
-void Apu23 ()
+void Apu23 (void)
 {
     BBS (1);
 }
 
-void Apu43 ()
+void Apu43 (void)
 {
     BBS (2);
 }
 
-void Apu63 ()
+void Apu63 (void)
 {
     BBS (3);
 }
 
-void Apu83 ()
+void Apu83 (void)
 {
     BBS (4);
 }
 
-void ApuA3 ()
+void ApuA3 (void)
 {
     BBS (5);
 }
 
-void ApuC3 ()
+void ApuC3 (void)
 {
     BBS (6);
 }
 
-void ApuE3 ()
+void ApuE3 (void)
 {
     BBS (7);
 }
@@ -513,47 +513,47 @@ if (!(S9xAPUGetByteZ (Work8) & (1 << (b)))) \
 else \
     IAPU.PC += 3
 
-void Apu13 ()
+void Apu13 (void)
 {
     BBC (0);
 }
 
-void Apu33 ()
+void Apu33 (void)
 {
     BBC (1);
 }
 
-void Apu53 ()
+void Apu53 (void)
 {
     BBC (2);
 }
 
-void Apu73 ()
+void Apu73 (void)
 {
     BBC (3);
 }
 
-void Apu93 ()
+void Apu93 (void)
 {
     BBC (4);
 }
 
-void ApuB3 ()
+void ApuB3 (void)
 {
     BBC (5);
 }
 
-void ApuD3 ()
+void ApuD3 (void)
 {
     BBC (6);
 }
 
-void ApuF3 ()
+void ApuF3 (void)
 {
     BBC (7);
 }
 
-void Apu04 ()
+void Apu04 (void)
 {
 // OR A,dp
     APURegisters.YA.B.A |= S9xAPUGetByteZ (OP1);
@@ -561,7 +561,7 @@ void Apu04 ()
     IAPU.PC += 2;
 }
 
-void Apu05 ()
+void Apu05 (void)
 {
 // OR A,abs
     Absolute ();
@@ -570,7 +570,7 @@ void Apu05 ()
     IAPU.PC += 3;
 }
 
-void Apu06 ()
+void Apu06 (void)
 {
 // OR A,(X)
     APURegisters.YA.B.A |= S9xAPUGetByteZ (APURegisters.X);
@@ -578,7 +578,7 @@ void Apu06 ()
     IAPU.PC++;
 }
 
-void Apu07 ()
+void Apu07 (void)
 {
 // OR A,(dp+X)
     IndexedXIndirect ();
@@ -587,7 +587,7 @@ void Apu07 ()
     IAPU.PC += 2;
 }
 
-void Apu08 ()
+void Apu08 (void)
 {
 // OR A,#00
     APURegisters.YA.B.A |= OP1;
@@ -595,7 +595,7 @@ void Apu08 ()
     IAPU.PC += 2;
 }
 
-void Apu09 ()
+void Apu09 (void)
 {
 // OR dp(dest),dp(src)
     Work8 = S9xAPUGetByteZ (OP1);
@@ -605,7 +605,7 @@ void Apu09 ()
     IAPU.PC += 3;
 }
 
-void Apu14 ()
+void Apu14 (void)
 {
 // OR A,dp+X
     APURegisters.YA.B.A |= S9xAPUGetByteZ (OP1 + APURegisters.X);
@@ -613,7 +613,7 @@ void Apu14 ()
     IAPU.PC += 2;
 }
 
-void Apu15 ()
+void Apu15 (void)
 {
 // OR A,abs+X
     AbsoluteX ();
@@ -622,7 +622,7 @@ void Apu15 ()
     IAPU.PC += 3;
 }
 
-void Apu16 ()
+void Apu16 (void)
 {
 // OR A,abs+Y
     AbsoluteY ();
@@ -631,7 +631,7 @@ void Apu16 ()
     IAPU.PC += 3;
 }
 
-void Apu17 ()
+void Apu17 (void)
 {
 // OR A,(dp)+Y
     IndirectIndexedY ();
@@ -640,17 +640,15 @@ void Apu17 ()
     IAPU.PC += 2;
 }
 
-void Apu18 ()
+void Apu18 (void)
 {
 // OR dp,#00
-    Work8 = OP1;
-    Work8 |= S9xAPUGetByteZ (OP2);
-    S9xAPUSetByteZ (Work8, OP2);
+    Work8 = Work8 | S9xAPUGetByteZ (OP2);
     APUSetZN8 (Work8);
     IAPU.PC += 3;
 }
 
-void Apu19 ()
+void Apu19 (void)
 {
 // OR (X),(Y)
     Work8 = S9xAPUGetByteZ (APURegisters.X) | S9xAPUGetByteZ (APURegisters.YA.B.Y);
@@ -659,7 +657,7 @@ void Apu19 ()
     IAPU.PC++;
 }
 
-void Apu0A ()
+void Apu0A (void)
 {
 // OR1 C,membit
     MemBit ();
@@ -671,7 +669,7 @@ void Apu0A ()
     IAPU.PC += 3;
 }
 
-void Apu2A ()
+void Apu2A (void)
 {
 // OR1 C,not membit
     MemBit ();
@@ -683,7 +681,7 @@ void Apu2A ()
     IAPU.PC += 3;
 }
 
-void Apu4A ()
+void Apu4A (void)
 {
 // AND1 C,membit
     MemBit ();
@@ -695,7 +693,7 @@ void Apu4A ()
     IAPU.PC += 3;
 }
 
-void Apu6A ()
+void Apu6A (void)
 {
 // AND1 C, not membit
     MemBit ();
@@ -707,7 +705,7 @@ void Apu6A ()
     IAPU.PC += 3;
 }
 
-void Apu8A ()
+void Apu8A (void)
 {
 // EOR1 C, membit
     MemBit ();
@@ -724,7 +722,7 @@ void Apu8A ()
     IAPU.PC += 3;
 }
 
-void ApuAA ()
+void ApuAA (void)
 {
 // MOV1 C,membit
     MemBit ();
@@ -735,7 +733,7 @@ void ApuAA ()
     IAPU.PC += 3;
 }
 
-void ApuCA ()
+void ApuCA (void)
 {
 // MOV1 membit,C
     MemBit ();
@@ -750,7 +748,7 @@ void ApuCA ()
     IAPU.PC += 3;
 }
 
-void ApuEA ()
+void ApuEA (void)
 {
 // NOT1 membit
     MemBit ();
@@ -758,7 +756,7 @@ void ApuEA ()
     IAPU.PC += 3;
 }
 
-void Apu0B ()
+void Apu0B (void)
 {
 // ASL dp
     Work8 = S9xAPUGetByteZ (OP1);
@@ -767,7 +765,7 @@ void Apu0B ()
     IAPU.PC += 2;
 }
 
-void Apu0C ()
+void Apu0C (void)
 {
 // ASL abs
     Absolute ();
@@ -777,7 +775,7 @@ void Apu0C ()
     IAPU.PC += 3;
 }
 
-void Apu1B ()
+void Apu1B (void)
 {
 // ASL dp+X
     Work8 = S9xAPUGetByteZ (OP1 + APURegisters.X);
@@ -786,14 +784,14 @@ void Apu1B ()
     IAPU.PC += 2;
 }
 
-void Apu1C ()
+void Apu1C (void)
 {
 // ASL A
     ASL (APURegisters.YA.B.A);
     IAPU.PC++;
 }
 
-void Apu0D ()
+void Apu0D (void)
 {
 // PUSH PSW
     S9xAPUPackStatus ();
@@ -801,28 +799,28 @@ void Apu0D ()
     IAPU.PC++;
 }
 
-void Apu2D ()
+void Apu2D (void)
 {
 // PUSH A
     Push (APURegisters.YA.B.A);
     IAPU.PC++;
 }
 
-void Apu4D ()
+void Apu4D (void)
 {
 // PUSH X
     Push (APURegisters.X);
     IAPU.PC++;
 }
 
-void Apu6D ()
+void Apu6D (void)
 {
 // PUSH Y
     Push (APURegisters.YA.B.Y);
     IAPU.PC++;
 }
 
-void Apu8E ()
+void Apu8E (void)
 {
 // POP PSW
     Pop (APURegisters.P);
@@ -834,28 +832,28 @@ void Apu8E ()
     IAPU.PC++;
 }
 
-void ApuAE ()
+void ApuAE (void)
 {
 // POP A
     Pop (APURegisters.YA.B.A);
     IAPU.PC++;
 }
 
-void ApuCE ()
+void ApuCE (void)
 {
 // POP X
     Pop (APURegisters.X);
     IAPU.PC++;
 }
 
-void ApuEE ()
+void ApuEE (void)
 {
 // POP Y
     Pop (APURegisters.YA.B.Y);
     IAPU.PC++;
 }
 
-void Apu0E ()
+void Apu0E (void)
 {
 // TSET1 abs
     Absolute ();
@@ -866,7 +864,7 @@ void Apu0E ()
     IAPU.PC += 3;
 }
 
-void Apu4E ()
+void Apu4E (void)
 {
 // TCLR1 abs
     Absolute ();
@@ -877,7 +875,7 @@ void Apu4E ()
     IAPU.PC += 3;
 }
 
-void Apu0F ()
+void Apu0F (void)
 {
 // BRK
 
@@ -894,7 +892,7 @@ void Apu0F ()
 #endif
 }
 
-void ApuEF ()
+void ApuEF (void)
 {
 // SLEEP
     // XXX: sleep
@@ -1094,7 +1092,7 @@ void Apu7A ()
     else
 	APUClearOverflow ();
     APUClearHalfCarry ();
-    if((APURegisters.YA.W ^ Work16 ^ (uint16) Work32) & 0x10)
+    if(((APURegisters.YA.W ^ Work16 ^ (uint16) Work32) & 0x10) != 0)
         APUSetHalfCarry ();
     APURegisters.YA.W = (uint16) Work32;
     APUSetZN16 (APURegisters.YA.W);
@@ -1119,7 +1117,7 @@ void Apu9A ()
 	    ((APURegisters.YA.W ^ (uint16) Int32) & 0x0080))
 	APUSetHalfCarry ();
     APUSetHalfCarry ();
-    if((APURegisters.YA.W ^ Work16 ^ (uint16) Work32) & 0x10)
+    if(((APURegisters.YA.W ^ Work16 ^ (uint16) Work32) & 0x10) != 0)
         APUClearHalfCarry ();
     APURegisters.YA.W = (uint16) Int32;
     APUSetZN16 (APURegisters.YA.W);
