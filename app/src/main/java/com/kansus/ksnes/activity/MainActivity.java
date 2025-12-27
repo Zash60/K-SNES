@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,6 +14,10 @@ import android.os.Parcelable;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.kansus.ksnes.R;
 
@@ -33,16 +38,44 @@ public class MainActivity extends FileChooser {
     private SharedPreferences settings;
     private boolean creatingShortcut;
 
+    private static final int PERMISSION_REQUEST_READ_EXTERNAL_STORAGE = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         settings = getSharedPreferences("MainActivity", MODE_PRIVATE);
 
-        super.onCreate(savedInstanceState);
-        setVolumeControlStream(AudioManager.STREAM_MUSIC);
-        setTitle(R.string.title_select_rom);
+        // Check for READ_EXTERNAL_STORAGE permission
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted, request it
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                    PERMISSION_REQUEST_READ_EXTERNAL_STORAGE);
+        } else {
+            // Permission already granted, proceed with normal onCreate
+            super.onCreate(savedInstanceState);
+            setVolumeControlStream(AudioManager.STREAM_MUSIC);
+            setTitle(R.string.title_select_rom);
 
-        creatingShortcut = getIntent().getAction().equals(
-                Intent.ACTION_CREATE_SHORTCUT);
+            creatingShortcut = getIntent().getAction().equals(
+                    Intent.ACTION_CREATE_SHORTCUT);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_READ_EXTERNAL_STORAGE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission was granted, restart the activity to apply
+                recreate();
+            } else {
+                // Permission denied, show a message and exit
+                Toast.makeText(this, "Permission denied. Cannot access ROMs.", Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
     }
 
     @Override
