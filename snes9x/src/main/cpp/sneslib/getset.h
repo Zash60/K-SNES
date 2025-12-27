@@ -97,6 +97,7 @@
 #include "spc7110.h"
 #include "obc1.h"
 #include "seta.h"
+#include <cstdint>
 
 extern "C"
 {
@@ -119,8 +120,8 @@ INLINE uint8 S9xGetByte (uint32 Address)
 #endif
 		return (*(GetAddress + (Address & 0xffff)));
     }
-	
-    switch ((int) GetAddress)
+
+    switch ((uintptr_t) GetAddress)
     {
     case CMemory::MAP_PPU:
 		return (S9xGetPPU (Address & 0xffff));
@@ -219,10 +220,10 @@ INLINE uint16 S9xGetWord (uint32 Address)
 #else
 		return (*(GetAddress + (Address & 0xffff)) |
 			(*(GetAddress + (Address & 0xffff) + 1) << 8));
-#endif	
+#endif
     }
 
-    switch ((int) GetAddress)
+    switch ((uintptr_t) GetAddress)
     {
     case CMemory::MAP_PPU:
 		return (S9xGetPPU (Address & 0xffff) |
@@ -345,8 +346,8 @@ INLINE void S9xSetByte (uint8 Byte, uint32 Address)
 #endif
 		return;
     }
-	
-    switch ((int) SetAddress)
+
+    switch ((uintptr_t) SetAddress)
     {
     case CMemory::MAP_PPU:
 		S9xSetPPU (Byte, Address & 0xffff);
@@ -478,8 +479,8 @@ INLINE void S9xSetWord (uint16 Word, uint32 Address)
 #endif
 		return;
     }
-	
-    switch ((int) SetAddress)
+
+    switch ((uintptr_t) SetAddress)
     {
     case CMemory::MAP_PPU:
 		S9xSetPPU ((uint8) Word, Address & 0xffff);
@@ -600,7 +601,7 @@ INLINE uint8 *GetBasePointer (uint32 Address)
 	{
 		return s7r.bank50;
 	}
-    switch ((int) GetAddress)
+    switch ((uintptr_t) GetAddress)
     {
 	case CMemory::MAP_SPC7110_DRAM:
 #ifdef SPC7110_DEBUG
@@ -666,7 +667,7 @@ INLINE uint8 *S9xGetMemPointer (uint32 Address)
 	if(Settings.SPC7110&&((Address&0x7FFFFF)==0x4800))
 		return s7r.bank50;
 
-    switch ((int) GetAddress)
+    switch ((uintptr_t) GetAddress)
     {
 	case CMemory::MAP_SPC7110_DRAM:
 #ifdef SPC7110_DEBUG
@@ -725,8 +726,8 @@ INLINE void S9xSetPCBase (uint32 Address)
 		CPU.PC = GetAddress + (Address & 0xffff);
 		return;
     }
-	
-    switch ((int) GetAddress)
+
+    switch ((uintptr_t) GetAddress)
     {
     case CMemory::MAP_PPU:
 		CPU.PCBase = Memory.FillRAM;
