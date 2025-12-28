@@ -80,7 +80,7 @@
         <service
             android:name=".service.EmulatorService"
             android:process=":emulator"
-            android:foregroundServiceType="game" />
+            android:foregroundServiceType="mediaPlayback" />
 
     </application>
 </manifest>
