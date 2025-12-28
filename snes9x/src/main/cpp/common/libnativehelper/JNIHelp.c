@@ -184,5 +184,6 @@ const char* jniStrError(int errnum, char* buf, size_t buflen)
     } else {
         // glibc strerror_r returning a string
         return ret;
+    }
 #endif
 }
