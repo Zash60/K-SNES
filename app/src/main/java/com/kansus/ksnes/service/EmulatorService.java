@@ -21,6 +21,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.os.Build;
 import android.os.IBinder;
 import androidx.core.app.NotificationCompat;
 import android.util.Log;
@@ -94,8 +95,10 @@ public class EmulatorService extends Service {
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(
                     this);
+            int flags = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ?
+                    PendingIntent.FLAG_IMMUTABLE : 0;
             Notification notification = builder.setContentIntent(PendingIntent.getActivity(this, 0,
-                    new Intent(this, EmulatorActivity.class), 0))
+                    new Intent(this, EmulatorActivity.class), flags))
                     .setSmallIcon(R.drawable.app_icon).setTicker(text).setWhen(System.currentTimeMillis())
                     .setAutoCancel(true).setContentTitle(text)
                     .setContentText(text).build();
