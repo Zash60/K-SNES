@@ -38,6 +38,18 @@ static struct {
 	int duration;
 } trackballEvents[2];
 
+static JNIEnv* getCurrentThreadJNIEnv()
+{
+	JNIEnv* env;
+	if (javaVM->GetEnv((void**)&env, JNI_VERSION_1_6) != JNI_OK) {
+		if (javaVM->AttachCurrentThread(&env, NULL) != JNI_OK) {
+			LOGE("Failed to attach current thread to JVM");
+			return NULL;
+		}
+	}
+	return env;
+}
+
 enum {
 	EMUSTATE_RUNNING,
 	EMUSTATE_PAUSED,
@@ -104,18 +116,6 @@ static void showFPS()
 		last = now;
 		frames = 0;
 	}
-}
-
-static JNIEnv* getCurrentThreadJNIEnv()
-{
-	JNIEnv* env;
-	if (javaVM->GetEnv((void**)&env, JNI_VERSION_1_6) != JNI_OK) {
-		if (javaVM->AttachCurrentThread(&env, NULL) != JNI_OK) {
-			LOGE("Failed to attach current thread to JVM");
-			return NULL;
-		}
-	}
-	return env;
 }
 
 static void pauseEmulator(JNIEnv *env, jobject self)
