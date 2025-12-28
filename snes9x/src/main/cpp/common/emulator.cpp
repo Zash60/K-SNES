@@ -30,7 +30,7 @@ static int refreshRate;
 static float gameSpeed;
 static bool soundEnabled;
 
-static JNIEnv *emuThreadEnv;
+static JavaVM *javaVM;
 static bool surfaceReady;
 
 static struct {
@@ -48,15 +48,18 @@ enum {
 class EngineCallbacks : public EmuEngine::Callbacks {
 public:
 	virtual bool lockSurface(EmuEngine::Surface *surface) {
-		return media->lockSurface(emuThreadEnv, surface, flipScreen);
+		JNIEnv* currentEnv = getCurrentThreadJNIEnv();
+		return currentEnv ? media->lockSurface(currentEnv, surface, flipScreen) : false;
 	}
 
 	virtual void unlockSurface(const EmuEngine::Surface *surface) {
-		media->unlockSurface(emuThreadEnv);
+		JNIEnv* currentEnv = getCurrentThreadJNIEnv();
+		if (currentEnv) media->unlockSurface(currentEnv);
 	}
 
 	virtual void playAudio(void *data, int size) {
-		media->audioPlay(emuThreadEnv, data, size);
+		JNIEnv* currentEnv = getCurrentThreadJNIEnv();
+		if (currentEnv) media->audioPlay(currentEnv, data, size);
 	}
 };
 
@@ -103,6 +106,18 @@ static void showFPS()
 	}
 }
 
+static JNIEnv* getCurrentThreadJNIEnv()
+{
+	JNIEnv* env;
+	if (javaVM->GetEnv((void**)&env, JNI_VERSION_1_6) != JNI_OK) {
+		if (javaVM->AttachCurrentThread(&env, NULL) != JNI_OK) {
+			LOGE("Failed to attach current thread to JVM");
+			return NULL;
+		}
+	}
+	return env;
+}
+
 static void pauseEmulator(JNIEnv *env, jobject self)
 {
 	pthread_mutex_lock(&emuStateMutex);
@@ -144,9 +159,12 @@ static void unloadROM(JNIEnv *env, jobject self)
 
 static void runEmulator()
 {
+	JNIEnv* currentEnv = getCurrentThreadJNIEnv();
+	if (currentEnv == NULL) return;
+
 	const bool soundOn = soundEnabled;
 	if (soundOn)
-		media->audioStart(emuThreadEnv);
+		media->audioStart(currentEnv);
 
 	const int fps = (int) (currentGame->fps * gameSpeed);
 	const int maxSkips = (int) (maxFrameSkips * gameSpeed);
@@ -190,11 +208,11 @@ static void runEmulator()
 
 		// FrameUpdateListener.onFrameUpdate(states);
 		if (jFrameUpdateListener != NULL) {
-			states = emuThreadEnv->CallIntMethod(jFrameUpdateListener,
+			states = currentEnv->CallIntMethod(jFrameUpdateListener,
 					midOnFrameUpdate, states);
 
-			if (emuThreadEnv->ExceptionOccurred()) {
-				emuThreadEnv->ExceptionClear();
+			if (currentEnv->ExceptionOccurred()) {
+				currentEnv->ExceptionClear();
 				break;
 			}
 		}
@@ -213,12 +231,12 @@ static void runEmulator()
 	}
 
 	if (soundOn)
-		media->audioPause(emuThreadEnv);
+		media->audioPause(currentEnv);
 }
 
 static void S9xEmulator_run(JNIEnv *env, jobject self)
 {
-	emuThreadEnv = env;
+	env->GetJavaVM(&javaVM);
 
 	while (true) {
 		pthread_mutex_lock(&emuStateMutex);
@@ -240,8 +258,6 @@ static void S9xEmulator_run(JNIEnv *env, jobject self)
 		}
 		pthread_mutex_unlock(&emuStateMutex);
 	}
-
-	emuThreadEnv = NULL;
 }
 
 extern EmuMedia *createEmuMedia();
