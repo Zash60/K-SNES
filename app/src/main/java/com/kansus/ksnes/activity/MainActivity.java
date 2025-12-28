@@ -42,9 +42,9 @@ public class MainActivity extends FileChooser {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         settings = getSharedPreferences("MainActivity", MODE_PRIVATE);
+
+        super.onCreate(savedInstanceState);
 
         // Check for READ_EXTERNAL_STORAGE permission
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
