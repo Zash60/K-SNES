@@ -186,4 +186,3 @@ const char* jniStrError(int errnum, char* buf, size_t buflen)
         return ret;
     }
 #endif
-}
