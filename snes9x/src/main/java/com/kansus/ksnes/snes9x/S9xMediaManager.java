@@ -3,6 +3,7 @@ package com.kansus.ksnes.snes9x;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.media.AudioAttributes;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
@@ -58,8 +59,8 @@ class S9xMediaManager {
                 AudioFormat.ENCODING_PCM_16BIT :
                 AudioFormat.ENCODING_PCM_8BIT);
         int channelConfig = (channels == 2 ?
-                AudioFormat.CHANNEL_CONFIGURATION_STEREO :
-                AudioFormat.CHANNEL_CONFIGURATION_MONO);
+                AudioFormat.CHANNEL_OUT_STEREO :
+                AudioFormat.CHANNEL_OUT_MONO);
 
         // avoid recreation if no parameters change
         if (track != null &&
@@ -74,13 +75,23 @@ class S9xMediaManager {
             bufferSize = 1500;
 
         try {
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_GAME)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .build();
+
+            AudioFormat audioFormat = new AudioFormat.Builder()
+                    .setSampleRate(rate)
+                    .setEncoding(format)
+                    .setChannelMask(channelConfig)
+                    .build();
+
             track = new AudioTrack(
-                    AudioManager.STREAM_MUSIC,
-                    rate,
-                    channelConfig,
-                    format,
+                    audioAttributes,
+                    audioFormat,
                     bufferSize,
-                    AudioTrack.MODE_STREAM);
+                    AudioTrack.MODE_STREAM,
+                    AudioManager.AUDIO_SESSION_ID_GENERATE);
 
             if (track.getState() == AudioTrack.STATE_UNINITIALIZED)
                 track = null;
@@ -91,7 +102,7 @@ class S9xMediaManager {
         if (track == null)
             return false;
 
-        track.setStereoVolume(volume, volume);
+        track.setVolume(volume);
         return true;
     }
 
@@ -101,7 +112,7 @@ class S9xMediaManager {
         volume = min + (max - min) * vol / 100;
 
         if (track != null)
-            track.setStereoVolume(volume, volume);
+            track.setVolume(volume);
     }
 
     static void audioDestroy() {

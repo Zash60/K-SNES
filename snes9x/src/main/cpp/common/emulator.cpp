@@ -60,16 +60,25 @@ enum {
 class EngineCallbacks : public EmuEngine::Callbacks {
 public:
 	virtual bool lockSurface(EmuEngine::Surface *surface) {
+		if (media == NULL || surface == NULL) {
+			return false;
+		}
 		JNIEnv* currentEnv = getCurrentThreadJNIEnv();
 		return currentEnv ? media->lockSurface(currentEnv, surface, flipScreen) : false;
 	}
 
 	virtual void unlockSurface(const EmuEngine::Surface *surface) {
+		if (media == NULL || surface == NULL) {
+			return;
+		}
 		JNIEnv* currentEnv = getCurrentThreadJNIEnv();
 		if (currentEnv) media->unlockSurface(currentEnv);
 	}
 
 	virtual void playAudio(void *data, int size) {
+		if (media == NULL || data == NULL || size <= 0) {
+			return;
+		}
 		JNIEnv* currentEnv = getCurrentThreadJNIEnv();
 		if (currentEnv) media->audioPlay(currentEnv, data, size);
 	}
@@ -364,7 +373,9 @@ S9xEmulator_processTrackball(JNIEnv *env, jobject self,
 static void
 S9xEmulator_fireLightGun(JNIEnv *env, jobject self, jint x, jint y)
 {
-	engine->fireLightGun(x, y);
+	if (engine != NULL) {
+		engine->fireLightGun(x, y);
+	}
 }
 
 static void
@@ -440,14 +451,18 @@ static void S9xEmulator_getScreenshot(JNIEnv *env, jobject self, jobject jbuffer
 static void S9xEmulator_reset(JNIEnv *env, jobject self)
 {
 	pauseEmulator(env, self);
-	engine->reset();
+	if (engine != NULL) {
+		engine->reset();
+	}
 	resumeEmulator();
 }
 
 static void S9xEmulator_power(JNIEnv *env, jobject self)
 {
 	pauseEmulator(env, self);
-	engine->power();
+	if (engine != NULL) {
+		engine->power();
+	}
 	resumeEmulator();
 }
 
@@ -509,7 +524,7 @@ static jboolean S9xEmulator_saveState(JNIEnv *env, jobject self, jstring jfile)
 	const char *file = env->GetStringUTFChars(jfile, NULL);
 
 	pauseEmulator(env, self);
-	jboolean rv = engine->saveState(file);
+	jboolean rv = (engine != NULL) ? engine->saveState(file) : JNI_FALSE;
 	resumeEmulator();
 
 	env->ReleaseStringUTFChars(jfile, file);
@@ -521,7 +536,7 @@ static jboolean S9xEmulator_loadState(JNIEnv *env, jobject self, jstring jfile)
 	const char *file = env->GetStringUTFChars(jfile, NULL);
 
 	pauseEmulator(env, self);
-	jboolean rv = engine->loadState(file);
+	jboolean rv = (engine != NULL) ? engine->loadState(file) : JNI_FALSE;
 	resumeEmulator();
 
 	env->ReleaseStringUTFChars(jfile, file);

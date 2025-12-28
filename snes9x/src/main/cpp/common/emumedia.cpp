@@ -178,6 +178,16 @@ void EmuMediaImpl::audioPause(JNIEnv *env)
 
 void EmuMediaImpl::audioPlay(JNIEnv *env, void *src, int size)
 {
+	if (src == NULL || size <= 0 || jAudioBuffer == NULL) {
+		return;
+	}
+
+	jsize bufferSize = env->GetArrayLength(jAudioBuffer);
+	if (size > bufferSize) {
+		// If the requested size is larger than our buffer, only copy what fits
+		size = bufferSize;
+	}
+
 	env->SetByteArrayRegion(jAudioBuffer, 0, size, (jbyte *) src);
 	env->CallStaticVoidMethod(jPeerClass, midAudioPlay, jAudioBuffer, size);
 }
