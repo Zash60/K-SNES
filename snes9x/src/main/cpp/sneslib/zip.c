@@ -194,10 +194,7 @@ local void free_linkedlist(linkedlist_data* ll)
 }
 
 
-local int add_data_in_datablock(ll,buf,len)
-    linkedlist_data* ll;
-    const void* buf;
-    uLong len;
+local int add_data_in_datablock(linkedlist_data* ll, const void* buf, uLong len)
 {
     linkedlist_datablock_internal* ldi;
     const unsigned char* from_copy;
