@@ -21,8 +21,11 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.pm.ServiceInfo;
 import android.os.Build;
 import android.os.IBinder;
+
+import androidx.core.app.ServiceCompat;
 import androidx.core.app.NotificationCompat;
 import android.util.Log;
 
@@ -47,29 +50,11 @@ public class EmulatorService extends Service {
 
     private static final String LOG_TAG = "EmulatorService";
 
-    private static final Class[] mStartForegroundSignature = new Class[]{
-            int.class, Notification.class};
-    private static final Class[] mStopForegroundSignature = new Class[]{
-            boolean.class};
-
     private NotificationManager mNM;
-    private Method mStartForeground;
-    private Method mStopForeground;
-    private Object[] mStartForegroundArgs = new Object[2];
-    private Object[] mStopForegroundArgs = new Object[1];
 
     @Override
     public void onCreate() {
         mNM = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        try {
-            mStartForeground = getClass().getMethod("startForeground",
-                    mStartForegroundSignature);
-            mStopForeground = getClass().getMethod("stopForeground",
-                    mStopForegroundSignature);
-        } catch (NoSuchMethodException e) {
-            // Running on an older platform.
-            mStartForeground = mStopForeground = null;
-        }
     }
 
     // This is the old onStart method that will be called on the pre-2.0
@@ -119,51 +104,33 @@ public class EmulatorService extends Service {
      * APIs if it is not available.
      */
     void startForegroundCompat(int id, Notification notification) {
-        // If we have the new startForeground API, then use it.
-        if (mStartForeground != null) {
-            mStartForegroundArgs[0] = id;
-            mStartForegroundArgs[1] = notification;
-            try {
-                mStartForeground.invoke(this, mStartForegroundArgs);
-            } catch (InvocationTargetException e) {
-                // Should not happen.
-                Log.w(LOG_TAG, "Unable to invoke startForeground", e);
-            } catch (IllegalAccessException e) {
-                // Should not happen.
-                Log.w(LOG_TAG, "Unable to invoke startForeground", e);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // Use ServiceCompat for modern Android versions
+                ServiceCompat.startForeground(this, id, notification,
+                        ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION);
+            } else {
+                // Fall back to direct call for older versions
+                startForeground(id, notification);
             }
-            return;
+        } catch (Exception e) {
+            Log.w(LOG_TAG, "Unable to start foreground service", e);
+            // Fall back on the old API as last resort
+            mNM.notify(id, notification);
         }
-
-        // Fall back on the old API.
-        //setForeground(true);
-        mNM.notify(id, notification);
     }
 
     /**
-     * This is a wrapper around the new stopForeground method, using the older
-     * APIs if it is not available.
+     * This is a wrapper around the stopForeground method.
      */
     void stopForegroundCompat(int id) {
-        // If we have the new stopForeground API, then use it.
-        if (mStopForeground != null) {
-            mStopForegroundArgs[0] = Boolean.TRUE;
-            try {
-                mStopForeground.invoke(this, mStopForegroundArgs);
-            } catch (InvocationTargetException e) {
-                // Should not happen.
-                Log.w(LOG_TAG, "Unable to invoke stopForeground", e);
-            } catch (IllegalAccessException e) {
-                // Should not happen.
-                Log.w(LOG_TAG, "Unable to invoke stopForeground", e);
-            }
-            return;
+        try {
+            stopForeground(true);
+            mNM.cancel(id);
+        } catch (Exception e) {
+            Log.w(LOG_TAG, "Unable to stop foreground service", e);
+            mNM.cancel(id);
         }
-
-        // Fall back on the old API.  Note to cancel BEFORE changing the
-        // foreground state, since we could be killed at that point.
-        mNM.cancel(id);
-        //setForeground(false);
     }
 
     @Override
