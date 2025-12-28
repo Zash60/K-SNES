@@ -161,7 +161,7 @@ void STOP (const char *s)
     S9xAPUOPrint (buffer, IAPU.PC - IAPU.RAM);
 #endif
 
-    sprintf (String, "Sound CPU in unknown state executing %s at %04X\n%s\n", s, IAPU.PC - IAPU.RAM, buffer);
+    sprintf (String, "Sound CPU in unknown state executing %s at %04lX\n%s\n", s, IAPU.PC - IAPU.RAM, buffer);
     S9xMessage (S9X_ERROR, S9X_APU_STOPPED, String);
     APU.TimerEnabled[0] = APU.TimerEnabled[1] = APU.TimerEnabled[2] = FALSE;
     IAPU.APUExecuting = FALSE;
@@ -251,7 +251,7 @@ APUSetZN8 ((uint8) Int16);
 #else
 #define PushW(w)\
     *(IAPU.RAM + 0xff + APURegisters.S) = w;\
-    *(IAPU.RAM + 0x100 + APURegisters.S) = (w >> 8);\
+    *(IAPU.RAM + 0x100 + APURegisters.S) = ((w) >> 8);\
     APURegisters.S -= 2;
 #define PopW(w)\
     APURegisters.S += 2; \
