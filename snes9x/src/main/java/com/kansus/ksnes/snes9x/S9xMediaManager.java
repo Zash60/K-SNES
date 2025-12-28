@@ -140,7 +140,26 @@ class S9xMediaManager {
     }
 
     static void audioPlay(byte[] data, int size) {
-        if (track != null)
-            track.write(data, 0, size);
+        if (track != null && data != null && size > 0 && size <= data.length) {
+            try {
+                int written = track.write(data, 0, size);
+                if (written < 0) {
+                    android.util.Log.e("S9xMediaManager", "AudioTrack.write failed with error: " + written);
+                }
+            } catch (Exception e) {
+                // Log error but don't crash
+                android.util.Log.e("S9xMediaManager", "Error writing audio data", e);
+            }
+        } else {
+            if (track == null) {
+                android.util.Log.w("S9xMediaManager", "AudioTrack is null");
+            } else if (data == null) {
+                android.util.Log.w("S9xMediaManager", "Audio data is null");
+            } else if (size <= 0) {
+                android.util.Log.w("S9xMediaManager", "Invalid audio size: " + size);
+            } else if (size > data.length) {
+                android.util.Log.w("S9xMediaManager", "Size exceeds data length: " + size + " > " + data.length);
+            }
+        }
     }
 }

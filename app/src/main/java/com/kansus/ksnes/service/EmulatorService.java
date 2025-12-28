@@ -108,7 +108,7 @@ public class EmulatorService extends Service {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 // Use ServiceCompat for modern Android versions
                 ServiceCompat.startForeground(this, id, notification,
-                        ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION);
+                        ServiceInfo.FOREGROUND_SERVICE_TYPE_GAME);
             } else {
                 // Fall back to direct call for older versions
                 startForeground(id, notification);
