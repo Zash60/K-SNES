@@ -169,20 +169,24 @@ const char* jniStrError(int errnum, char* buf, size_t buflen)
 #if defined(__GLIBC__)
     char* ret = strerror_r(errnum, buf, buflen);
     if ((long)ret == 0) { // Should not happen in GNU, but just in case
+        //POSIX strerror_r, success
+        return buf;
+    } else {
+        // glibc strerror_r returning a string
+        return ret;
+    }
 #else
     int ret = strerror_r(errnum, buf, buflen);
     if (ret == 0) { // POSIX strerror_r, success
-#endif
-
         //POSIX strerror_r, success
         return buf;
     } else if (ret == -1) {
         // POSIX strerror_r, failure
         snprintf(buf, buflen, "errno %d", errnum);
         return buf;
-#if defined(__GLIBC__)
     } else {
-        // glibc strerror_r returning a string
-        return ret;
+        // Should not happen, but just in case
+        return buf;
     }
 #endif
+}
