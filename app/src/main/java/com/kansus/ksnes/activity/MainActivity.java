@@ -9,8 +9,11 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcelable;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -46,21 +49,34 @@ public class MainActivity extends FileChooser {
 
         super.onCreate(savedInstanceState);
 
-        // Check for READ_EXTERNAL_STORAGE permission
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted, request it
-            ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
-                    PERMISSION_REQUEST_READ_EXTERNAL_STORAGE);
-        } else {
-            // Permission already granted, proceed with normal setup
-            setVolumeControlStream(AudioManager.STREAM_MUSIC);
-            setTitle(R.string.title_select_rom);
+        // Always set up basic UI first
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
+        setTitle(R.string.title_select_rom);
 
-            creatingShortcut = getIntent().getAction().equals(
-                    Intent.ACTION_CREATE_SHORTCUT);
+        creatingShortcut = getIntent().getAction().equals(
+                Intent.ACTION_CREATE_SHORTCUT);
+
+        // Check for storage permissions based on Android version
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            // Android 11+ (API 30+): Use MANAGE_EXTERNAL_STORAGE for full access
+            if (!Environment.isExternalStorageManager()) {
+                // Permission not granted, redirect to settings
+                Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                intent.setData(Uri.parse("package:" + getPackageName()));
+                startActivity(intent);
+                Toast.makeText(this, "Please grant 'All files access' permission to access ROMs", Toast.LENGTH_LONG).show();
+            }
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            // Android 6.0-10 (API 23-29): Use READ_EXTERNAL_STORAGE
+            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                // Permission is not granted, request it
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
+                        PERMISSION_REQUEST_READ_EXTERNAL_STORAGE);
+            }
         }
+        // If permission is already granted, the UI is already set up above
     }
 
     @Override
@@ -69,12 +85,25 @@ public class MainActivity extends FileChooser {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSION_REQUEST_READ_EXTERNAL_STORAGE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission was granted, restart the activity to apply
-                recreate();
+                // Permission was granted, setup is already done in onCreate
+                Toast.makeText(this, "Permission granted! You can now access ROMs.", Toast.LENGTH_SHORT).show();
             } else {
-                // Permission denied, show a message and exit
-                Toast.makeText(this, "Permission denied. Cannot access ROMs.", Toast.LENGTH_LONG).show();
-                finish();
+                // Permission denied, show a message and allow user to try again
+                Toast.makeText(this, "Permission denied. Cannot access ROMs. Please grant permission to continue.", Toast.LENGTH_LONG).show();
+                // Don't finish immediately, let user try again or exit manually
+                // The UI is already set up from onCreate, so user can interact
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Check MANAGE_EXTERNAL_STORAGE permission on resume (for Android 11+)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (Environment.isExternalStorageManager()) {
+                // Permission granted, setup is already done in onCreate
+                Toast.makeText(this, "All files access granted! You can now access ROMs.", Toast.LENGTH_SHORT).show();
             }
         }
     }
