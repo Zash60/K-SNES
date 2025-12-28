@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothSocket;
 import android.os.Handler;
 import android.os.Message;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -513,12 +514,16 @@ public class NetPlayService {
         }
 
         public void writeBytes(byte[] buffer) throws IOException {
+            writeBytes(buffer, 0, buffer.length);
+        }
+
+        public void writeBytes(byte[] buffer, int offset, int length) throws IOException {
             int bytes = 0;
-            while (bytes < buffer.length) {
-                int n = buffer.length - bytes;
+            while (bytes < length) {
+                int n = length - bytes;
                 if (n > 512)
                     n = 512;
-                stream.write(buffer, bytes, n);
+                stream.write(buffer, offset + bytes, n);
                 bytes += n;
             }
             stream.flush();
