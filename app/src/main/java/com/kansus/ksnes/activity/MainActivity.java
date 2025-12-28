@@ -42,6 +42,8 @@ public class MainActivity extends FileChooser {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
         settings = getSharedPreferences("MainActivity", MODE_PRIVATE);
 
         // Check for READ_EXTERNAL_STORAGE permission
@@ -52,8 +54,7 @@ public class MainActivity extends FileChooser {
                     new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
                     PERMISSION_REQUEST_READ_EXTERNAL_STORAGE);
         } else {
-            // Permission already granted, proceed with normal onCreate
-            super.onCreate(savedInstanceState);
+            // Permission already granted, proceed with normal setup
             setVolumeControlStream(AudioManager.STREAM_MUSIC);
             setTitle(R.string.title_select_rom);
 
