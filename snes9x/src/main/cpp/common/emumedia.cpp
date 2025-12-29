@@ -51,7 +51,7 @@ void EmuMediaImpl::releaseVideoBuffer(JNIEnv *env)
 		jVideoBuffer = NULL;
 	}
 	if (screen != NULL) {
-		free(screen);
+		delete[] screen;
 		screen = NULL;
 	}
 }
