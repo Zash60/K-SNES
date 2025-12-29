@@ -138,7 +138,8 @@ void EmuMediaImpl::unlockSurface(JNIEnv *env)
 	jint *image = env->GetIntArrayElements(jVideoBuffer, 0);
 	for (int i = 0; i < size; i++) {
 		unsigned short pix = screen[i];
-		image[i] = (pix & 0xf800) << 8 |
+		image[i] = 0xFF000000 |  // Alpha opaco
+			    (pix & 0xf800) << 8 |
 			    (pix & 0x07e0) << 5 |
 				(pix & 0x1f) << 3;
 	}
