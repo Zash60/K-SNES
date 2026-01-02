@@ -224,6 +224,17 @@ public class EmulatorActivity extends Activity implements
         super.onConfigurationChanged(newConfig);
 
         setFlipScreen(sharedPrefs, newConfig);
+        
+        // Handle virtual keypad resize on orientation change
+        if (mEmulator != null && mEmulator.getInputModule() != null && 
+            mEmulator.getInputModule().getVirtualKeypad() != null) {
+            try {
+                android.view.Display display = getWindowManager().getDefaultDisplay();
+                mEmulator.getInputModule().getVirtualKeypad().resize(display.getWidth(), display.getHeight());
+            } catch (Exception e) {
+                Log.e(LOG_TAG, "Error resizing virtual keypad on configuration change: " + e.getMessage());
+            }
+        }
     }
 
     @Override

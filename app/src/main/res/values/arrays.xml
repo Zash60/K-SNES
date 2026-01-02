@@ -54,6 +54,7 @@
     </string-array>
 
     <string-array name="vkeypad_size_entryvalues">
+        <item>extra_large</item>
         <item>large</item>
         <item>medium</item>
         <item>small</item>

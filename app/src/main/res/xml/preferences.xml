@@ -168,7 +168,7 @@
 
             <PreferenceCategory android:title="@string/appearance">
                 <ListPreference
-                    android:defaultValue="medium"
+                    android:defaultValue="large"
                     android:entries="@array/vkeypad_size_entries"
                     android:entryValues="@array/vkeypad_size_entryvalues"
                     android:key="vkeypadSize"

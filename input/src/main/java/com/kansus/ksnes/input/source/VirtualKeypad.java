@@ -155,9 +155,13 @@ public class VirtualKeypad implements TouchInputSource {
         String value = prefs.getString("vkeypadSize", null);
         if ("small".equals(value))
             return 1.0f;
+        if ("medium".equals(value))
+            return 1.2f;
         if ("large".equals(value))
             return 1.33333f;
-        return 1.2f;
+        if ("extra_large".equals(value))
+            return 1.6f;
+        return 1.33333f; // default to large
     }
 
     private Control createControl(int resId) {
