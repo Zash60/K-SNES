@@ -2520,14 +2520,14 @@ static void Op0CM0 (void)
 	if (!Settings.SoundSkipMethod) {\
 	    if( CPU.PC - CPU.PCBase > OpAddress)\
 	        return;\
-	} else \
-	if (Settings.SoundSkipMethod == 1)\
+	} else if (Settings.SoundSkipMethod == 1) {\
 	    return;\
-	if (Settings.SoundSkipMethod == 3)\
+	} else if (Settings.SoundSkipMethod == 3) {\
 	    if( CPU.PC - CPU.PCBase > OpAddress)\
 	        return;\
-	    else\
+	    } else {\
 		CPU.PC = CPU.PCBase + OpAddress;\
+	    }\
     }
 
 #define BranchCheck2()\
@@ -2537,14 +2537,14 @@ static void Op0CM0 (void)
 	if (!Settings.SoundSkipMethod) {\
 	    if( CPU.PC - CPU.PCBase > OpAddress)\
 	        return;\
-	} else \
-	if (Settings.SoundSkipMethod == 1)\
+	} else if (Settings.SoundSkipMethod == 1) {\
 	    CPU.PC = CPU.PCBase + OpAddress;\
-	if (Settings.SoundSkipMethod == 3)\
+	} else if (Settings.SoundSkipMethod == 3) {\
 	    if (CPU.PC - CPU.PCBase > OpAddress)\
 	        return;\
-	    else\
+	    } else {\
 		CPU.PC = CPU.PCBase + OpAddress;\
+	    }\
     }
 #else
 #define BranchCheck0()

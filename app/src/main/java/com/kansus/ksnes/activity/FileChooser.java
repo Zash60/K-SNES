@@ -4,6 +4,7 @@ import android.app.ListActivity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,7 +28,7 @@ public class FileChooser extends ListActivity implements FileFilter, View.OnClic
 	public static final String EXTRA_FILTERS = "filters";
 
 	private static final String LOG_TAG = "FileChooser";
-	private final File sdcardDir = new File("/sdcard");
+	private final File sdcardDir = Environment.getExternalStorageDirectory();
 	private File currentDir;
 	private String[] filters;
 	private EditText pathEdit;

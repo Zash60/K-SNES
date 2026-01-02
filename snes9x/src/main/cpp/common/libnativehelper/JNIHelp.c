@@ -164,20 +164,29 @@ const char* jniStrError(int errnum, char* buf, size_t buflen)
     // note: glibc has a nonstandard strerror_r that returns char* rather
     // than POSIX's int.
     // char *strerror_r(int errnum, char *buf, size_t n);
-    char* ret = (char*) strerror_r(errnum, buf, buflen);
-    if (((int)ret) == 0) {
+    // On GNU, strerror_r returns char *. On POSIX, it returns int.
+    // We try to detect which one it is.
+#if defined(__GLIBC__)
+    char* ret = strerror_r(errnum, buf, buflen);
+    if ((long)ret == 0) { // Should not happen in GNU, but just in case
         //POSIX strerror_r, success
         return buf;
-    } else if (((int)ret) == -1) {
-        //POSIX strerror_r, failure
-        // (Strictly, POSIX only guarantees a value other than 0. The safest
-        // way to implement this function is to use C++ and overload on the
-        // type of strerror_r to accurately distinguish GNU from POSIX. But
-        // realistic implementations will always return -1.)
+    } else {
+        // glibc strerror_r returning a string
+        return ret;
+    }
+#else
+    int ret = strerror_r(errnum, buf, buflen);
+    if (ret == 0) { // POSIX strerror_r, success
+        //POSIX strerror_r, success
+        return buf;
+    } else if (ret == -1) {
+        // POSIX strerror_r, failure
         snprintf(buf, buflen, "errno %d", errnum);
         return buf;
     } else {
-        //glibc strerror_r returning a string
-        return ret;
+        // Should not happen, but just in case
+        return buf;
     }
+#endif
 }

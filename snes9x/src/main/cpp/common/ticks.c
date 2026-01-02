@@ -2,12 +2,12 @@
 
 static struct timespec startTicks;
 
-void ticksInitialize()
+void ticksInitialize(void)
 {
 	clock_gettime(CLOCK_MONOTONIC, &startTicks);
 }
 
-unsigned int ticksGetTicks()
+unsigned int ticksGetTicks(void)
 {
 	struct timespec now;
 	clock_gettime(CLOCK_MONOTONIC, &now);

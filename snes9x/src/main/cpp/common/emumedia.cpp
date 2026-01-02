@@ -51,7 +51,7 @@ void EmuMediaImpl::releaseVideoBuffer(JNIEnv *env)
 		jVideoBuffer = NULL;
 	}
 	if (screen != NULL) {
-		free(screen);
+		delete[] screen;
 		screen = NULL;
 	}
 }
@@ -138,7 +138,8 @@ void EmuMediaImpl::unlockSurface(JNIEnv *env)
 	jint *image = env->GetIntArrayElements(jVideoBuffer, 0);
 	for (int i = 0; i < size; i++) {
 		unsigned short pix = screen[i];
-		image[i] = (pix & 0xf800) << 8 |
+		image[i] = 0xFF000000 |  // Alpha opaco
+			    (pix & 0xf800) << 8 |
 			    (pix & 0x07e0) << 5 |
 				(pix & 0x1f) << 3;
 	}
@@ -178,6 +179,16 @@ void EmuMediaImpl::audioPause(JNIEnv *env)
 
 void EmuMediaImpl::audioPlay(JNIEnv *env, void *src, int size)
 {
+	if (src == NULL || size <= 0 || jAudioBuffer == NULL) {
+		return;
+	}
+
+	jsize bufferSize = env->GetArrayLength(jAudioBuffer);
+	if (size > bufferSize) {
+		// If the requested size is larger than our buffer, only copy what fits
+		size = bufferSize;
+	}
+
 	env->SetByteArrayRegion(jAudioBuffer, 0, size, (jbyte *) src);
 	env->CallStaticVoidMethod(jPeerClass, midAudioPlay, jAudioBuffer, size);
 }

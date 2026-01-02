@@ -530,19 +530,19 @@ static FreezeData SnapS7RTC [] = {
 static char ROMFilename [_MAX_PATH];
 //static char SnapshotFilename [_MAX_PATH];
 
-void FreezeStruct (char *name, void *base, FreezeData *fields,
+void FreezeStruct (const char *name, void *base, FreezeData *fields,
 				   int num_fields);
-void FreezeBlock (char *name, uint8 *block, int size);
+void FreezeBlock (const char *name, uint8 *block, int size);
 
-int UnfreezeStruct (char *name, void *base, FreezeData *fields,
+int UnfreezeStruct (const char *name, void *base, FreezeData *fields,
 					int num_fields);
-int UnfreezeBlock (char *name, uint8 *block, int size);
+int UnfreezeBlock (const char *name, uint8 *block, int size);
 
-int UnfreezeStructCopy (char *name, uint8** block, FreezeData *fields, int num_fields);
+int UnfreezeStructCopy (const char *name, uint8** block, FreezeData *fields, int num_fields);
 
 void UnfreezeStructFromCopy (void *base, FreezeData *fields, int num_fields, uint8* block);
 
-int UnfreezeBlockCopy (char *name, uint8** block, int size);
+int UnfreezeBlockCopy (const char *name, uint8** block, int size);
 
 bool8 Snapshot (const char *filename)
 {
@@ -646,7 +646,7 @@ void S9xFreezeToStream ()
     }
     sprintf (buffer, "%s:%04d\n", SNAPSHOT_MAGIC, SNAPSHOT_VERSION);
     statef_write (buffer, strlen (buffer));
-    sprintf (buffer, "NAM:%06d:%s%c", strlen (Memory.ROMFilename) + 1,
+    sprintf (buffer, "NAM:%06zu:%s%c", strlen (Memory.ROMFilename) + 1,
 		Memory.ROMFilename, 0);
     statef_write (buffer, strlen (buffer) + 1);
     FreezeStruct ("CPU", &CPU, SnapCPU, COUNT (SnapCPU));
@@ -967,7 +967,7 @@ int FreezeSize (int size, int type)
     }
 }
 
-void FreezeStruct (char *name, void *base, FreezeData *fields,
+void FreezeStruct (const char *name, void *base, FreezeData *fields,
 				   int num_fields)
 {
     // Work out the size of the required block
@@ -1054,7 +1054,7 @@ void FreezeStruct (char *name, void *base, FreezeData *fields,
     delete[] block;
 }
 
-void FreezeBlock (char *name, uint8 *block, int size)
+void FreezeBlock (const char *name, uint8 *block, int size)
 {
     char buffer [512];
     sprintf (buffer, "%s:%06d:", name, size);
@@ -1088,7 +1088,7 @@ int UnfreezeStruct (char *name, void *base, FreezeData *fields,
 	
     if ((result = UnfreezeBlock (name, block, len)) != SUCCESS)
     {
-		delete block;
+		delete[] block;
 		return (result);
     }
 	
@@ -1157,7 +1157,7 @@ int UnfreezeStruct (char *name, void *base, FreezeData *fields,
     return (result);
 }
 
-int UnfreezeBlock (char *name, uint8 *block, int size)
+int UnfreezeBlock (const char *name, uint8 *block, int size)
 {
     char buffer [20];
     int len = 0;
@@ -1189,7 +1189,7 @@ int UnfreezeBlock (char *name, uint8 *block, int size)
     return (SUCCESS);
 }
 
-int UnfreezeStructCopy (char *name, uint8** block, FreezeData *fields, int num_fields)
+int UnfreezeStructCopy (const char *name, uint8** block, FreezeData *fields, int num_fields)
 {
     // Work out the size of the required block
     int len = 0;
@@ -1277,7 +1277,7 @@ void UnfreezeStructFromCopy (void *base, FreezeData *fields, int num_fields, uin
     }
 }
 
-int UnfreezeBlockCopy (char *name, uint8** block, int size)
+int UnfreezeBlockCopy (const char *name, uint8** block, int size)
 {
     *block = new uint8 [size];
     int result;

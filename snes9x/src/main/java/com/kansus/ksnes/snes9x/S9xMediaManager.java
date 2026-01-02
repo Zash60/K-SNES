@@ -3,6 +3,7 @@ package com.kansus.ksnes.snes9x;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.media.AudioAttributes;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
@@ -58,8 +59,8 @@ class S9xMediaManager {
                 AudioFormat.ENCODING_PCM_16BIT :
                 AudioFormat.ENCODING_PCM_8BIT);
         int channelConfig = (channels == 2 ?
-                AudioFormat.CHANNEL_CONFIGURATION_STEREO :
-                AudioFormat.CHANNEL_CONFIGURATION_MONO);
+                AudioFormat.CHANNEL_OUT_STEREO :
+                AudioFormat.CHANNEL_OUT_MONO);
 
         // avoid recreation if no parameters change
         if (track != null &&
@@ -74,13 +75,23 @@ class S9xMediaManager {
             bufferSize = 1500;
 
         try {
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_GAME)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .build();
+
+            AudioFormat audioFormat = new AudioFormat.Builder()
+                    .setSampleRate(rate)
+                    .setEncoding(format)
+                    .setChannelMask(channelConfig)
+                    .build();
+
             track = new AudioTrack(
-                    AudioManager.STREAM_MUSIC,
-                    rate,
-                    channelConfig,
-                    format,
+                    audioAttributes,
+                    audioFormat,
                     bufferSize,
-                    AudioTrack.MODE_STREAM);
+                    AudioTrack.MODE_STREAM,
+                    AudioManager.AUDIO_SESSION_ID_GENERATE);
 
             if (track.getState() == AudioTrack.STATE_UNINITIALIZED)
                 track = null;
@@ -91,7 +102,7 @@ class S9xMediaManager {
         if (track == null)
             return false;
 
-        track.setStereoVolume(volume, volume);
+        track.setVolume(volume);
         return true;
     }
 
@@ -101,7 +112,7 @@ class S9xMediaManager {
         volume = min + (max - min) * vol / 100;
 
         if (track != null)
-            track.setStereoVolume(volume, volume);
+            track.setVolume(volume);
     }
 
     static void audioDestroy() {
@@ -129,7 +140,26 @@ class S9xMediaManager {
     }
 
     static void audioPlay(byte[] data, int size) {
-        if (track != null)
-            track.write(data, 0, size);
+        if (track != null && data != null && size > 0 && size <= data.length) {
+            try {
+                int written = track.write(data, 0, size);
+                if (written < 0) {
+                    android.util.Log.e("S9xMediaManager", "AudioTrack.write failed with error: " + written);
+                }
+            } catch (Exception e) {
+                // Log error but don't crash
+                android.util.Log.e("S9xMediaManager", "Error writing audio data", e);
+            }
+        } else {
+            if (track == null) {
+                android.util.Log.w("S9xMediaManager", "AudioTrack is null");
+            } else if (data == null) {
+                android.util.Log.w("S9xMediaManager", "Audio data is null");
+            } else if (size <= 0) {
+                android.util.Log.w("S9xMediaManager", "Invalid audio size: " + size);
+            } else if (size > data.length) {
+                android.util.Log.w("S9xMediaManager", "Size exceeds data length: " + size + " > " + data.length);
+            }
+        }
     }
 }

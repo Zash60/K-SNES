@@ -141,7 +141,9 @@ public class DefaultInputModule implements InputModule,
             return;
         }
 
-        mInputSensor.disable();
+        if (mInputSensor != null) {
+            mInputSensor.disable();
+        }
         mKeyboard.disable();
         mVirtualKeypad.disable();
 
@@ -154,7 +156,9 @@ public class DefaultInputModule implements InputModule,
             return;
         }
 
-        mInputSensor.enable();
+        if (mInputSensor != null) {
+            mInputSensor.enable();
+        }
         mKeyboard.enable();
         mVirtualKeypad.enable();
 
